@@ -73,9 +73,16 @@
 
 .grid-layout {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 30px;
   width: 100%;
+}
+
+@media (max-width: 768px) {
+  .grid-layout {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
 }
 
 .loader {
@@ -87,7 +94,9 @@
 }
 
 @keyframes blink {
-  50% { opacity: 0; }
+  50% {
+    opacity: 0;
+  }
 }
 
 .tab-content {
@@ -140,25 +149,26 @@
   color: #7b4fb6;
   padding: 10px;
   cursor: pointer;
-  box-shadow: 4px 4px 0px rgba(0,0,0,0.5);
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.5);
   transition: all 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.settings-btn.active, .settings-btn:hover {
+.settings-btn.active,
+.settings-btn:hover {
   background: #7b4fb6;
   color: #1a0b2e;
   transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px rgba(0,0,0,0.5);
+  box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.5);
 }
 
 .settings-menu {
   background: #0d0221;
   border: 4px solid #7b4fb6;
   padding: 15px;
-  box-shadow: 0 0 20px rgba(123, 79, 182, 0.4), 10px 10px 0px rgba(0,0,0,0.6);
+  box-shadow: 0 0 20px rgba(123, 79, 182, 0.4), 10px 10px 0px rgba(0, 0, 0, 0.6);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -230,11 +240,11 @@
   color: #1a0b2e;
 }
 
-.app-root.day-mode h1, 
+.app-root.day-mode h1,
 .app-root.day-mode .subtitle,
 .app-root.day-mode .header-icon {
   color: #fff;
-  filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.5));
+  filter: drop-shadow(4px 4px 0px rgba(0, 0, 0, 0.5));
 }
 
 .app-root.day-mode .pixel-button:not(.active) {
@@ -283,7 +293,7 @@
 .app-root.day-mode .settings-menu {
   background: rgba(255, 245, 230, 0.95);
   border-color: #f7941d;
-  box-shadow: 0 0 20px rgba(247, 148, 29, 0.3), 10px 10px 0px rgba(0,0,0,0.2);
+  box-shadow: 0 0 20px rgba(247, 148, 29, 0.3), 10px 10px 0px rgba(0, 0, 0, 0.2);
 }
 
 .app-root.day-mode .settings-header {
@@ -296,6 +306,7 @@
     flex-direction: column;
     width: 100%;
   }
+
   .pixel-button {
     width: 100%;
   }
@@ -313,15 +324,47 @@
   color: #f7941d;
 }
 
+@media (max-width: 768px) {
+  .settings-container {
+    top: 10px;
+    right: 10px;
+  }
+  
+  .main-header h1 {
+    font-size: 1.5rem;
+    margin-top: 20px;
+  }
+
+  .pixel-nav {
+    gap: 8px;
+    margin-bottom: 30px;
+  }
+}
+
 @keyframes blink-cursor {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
 }
 
 @keyframes pulse-glow {
-  0% { box-shadow: 0 0 5px #7b4fb6, 4px 4px 0px rgba(0,0,0,0.5); }
-  50% { box-shadow: 0 0 15px #7b4fb6, 4px 4px 0px rgba(0,0,0,0.5); }
-  100% { box-shadow: 0 0 5px #7b4fb6, 4px 4px 0px rgba(0,0,0,0.5); }
+  0% {
+    box-shadow: 0 0 5px #7b4fb6, 4px 4px 0px rgba(0, 0, 0, 0.5);
+  }
+
+  50% {
+    box-shadow: 0 0 15px #7b4fb6, 4px 4px 0px rgba(0, 0, 0, 0.5);
+  }
+
+  100% {
+    box-shadow: 0 0 5px #7b4fb6, 4px 4px 0px rgba(0, 0, 0, 0.5);
+  }
 }
 
 .settings-btn.active {
@@ -399,8 +442,14 @@
   background: rgba(0, 255, 255, 0.1);
 }
 
-.app-root.day-mode .avatar-item { border-color: #f7941d; }
-.app-root.day-mode .avatar-upload-label { border-color: #f7941d; color: #f7941d; }
+.app-root.day-mode .avatar-item {
+  border-color: #f7941d;
+}
+
+.app-root.day-mode .avatar-upload-label {
+  border-color: #f7941d;
+  color: #f7941d;
+}
 
 .film-grain {
   position: fixed;
@@ -423,15 +472,11 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    rgba(18, 16, 16, 0) 50%, 
-    rgba(0, 0, 0, 0.05) 50%
-  ), linear-gradient(
-    90deg, 
-    rgba(255, 0, 0, 0.01), 
-    rgba(0, 255, 0, 0.01), 
-    rgba(0, 0, 255, 0.01)
-  );
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%,
+      rgba(0, 0, 0, 0.05) 50%), linear-gradient(90deg,
+      rgba(255, 0, 0, 0.01),
+      rgba(0, 255, 0, 0.01),
+      rgba(0, 0, 255, 0.01));
   background-size: 100% 3px, 3px 100%;
   pointer-events: none;
 }
@@ -442,33 +487,105 @@
 }
 
 @keyframes noise-shake {
-  0% { transform: translate(0, 0); }
-  50% { transform: translate(-1%, 1%); }
-  100% { transform: translate(1%, -1%); }
+  0% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(-1%, 1%);
+  }
+
+  100% {
+    transform: translate(1%, -1%);
+  }
 }
 
 @keyframes noise-animate {
-  0% { transform: translate(0, 0); }
-  10% { transform: translate(-5%, -5%); }
-  20% { transform: translate(-10%, 5%); }
-  30% { transform: translate(5%, -10%); }
-  40% { transform: translate(-5%, 15%); }
-  50% { transform: translate(-10%, 5%); }
-  60% { transform: translate(15%, 0); }
-  70% { transform: translate(0, 10%); }
-  80% { transform: translate(-15%, 0); }
-  90% { transform: translate(10%, 5%); }
-  100% { transform: translate(5%, 0); }
+  0% {
+    transform: translate(0, 0);
+  }
+
+  10% {
+    transform: translate(-5%, -5%);
+  }
+
+  20% {
+    transform: translate(-10%, 5%);
+  }
+
+  30% {
+    transform: translate(5%, -10%);
+  }
+
+  40% {
+    transform: translate(-5%, 15%);
+  }
+
+  50% {
+    transform: translate(-10%, 5%);
+  }
+
+  60% {
+    transform: translate(15%, 0);
+  }
+
+  70% {
+    transform: translate(0, 10%);
+  }
+
+  80% {
+    transform: translate(-15%, 0);
+  }
+
+  90% {
+    transform: translate(10%, 5%);
+  }
+
+  100% {
+    transform: translate(5%, 0);
+  }
 }
 
 
 
 @keyframes pulse-glow-day {
-  0% { box-shadow: 0 0 5px #f7941d, 4px 4px 0px rgba(0,0,0,0.2); }
-  50% { box-shadow: 0 0 15px #f7941d, 4px 4px 0px rgba(0,0,0,0.2); }
-  100% { box-shadow: 0 0 5px #f7941d, 4px 4px 0px rgba(0,0,0,0.2); }
+  0% {
+    box-shadow: 0 0 5px #f7941d, 4px 4px 0px rgba(0, 0, 0, 0.2);
+  }
+
+  50% {
+    box-shadow: 0 0 15px #f7941d, 4px 4px 0px rgba(0, 0, 0, 0.2);
+  }
+
+  100% {
+    box-shadow: 0 0 5px #f7941d, 4px 4px 0px rgba(0, 0, 0, 0.2);
+  }
 }
 
 .app-root.day-mode .settings-btn.active {
   animation: pulse-glow-day 2s infinite;
+}
+
+.matrix-alert {
+  position: fixed;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #0f0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.5rem;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 10px 30px;
+  border: 2px solid #0f0;
+  box-shadow: 0 0 20px #0f0;
+  z-index: 10000;
+  pointer-events: none;
+  text-shadow: 0 0 10px #0f0;
+  animation: matrix-glitch 0.2s infinite;
+}
+
+@keyframes matrix-glitch {
+  0% { transform: translateX(-50%) skew(0); }
+  50% { transform: translateX(-52%) skew(2deg); opacity: 0.8; }
+  100% { transform: translateX(-48%) skew(-2deg); }
 }

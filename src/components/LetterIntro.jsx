@@ -6,12 +6,12 @@ import './LetterIntro.css';
 const CyberCrowParticle = ({ index }) => {
   const angle = (index / 8) * Math.PI * 2;
   const velocity = 200 + Math.random() * 300;
-  
+
   return (
     <motion.div
       className="cyber-crow-particle"
       initial={{ x: 0, y: 0, opacity: 1, scale: 1 }}
-      animate={{ 
+      animate={{
         x: Math.cos(angle) * velocity,
         y: Math.sin(angle) * velocity - 100,
         opacity: 0,
@@ -33,12 +33,12 @@ const LetterIntro = ({ onComplete }) => {
   const handleOpen = () => {
     setIsGlitching(true);
     playTechGlitch();
-    
+
     setTimeout(() => {
       setIsGlitching(false);
       setIsOpen(true);
       playDigitalOpen();
-      
+
       // Cyber crows burst sounds
       setTimeout(playCrowSound, 300);
       setTimeout(playCrowSound, 600);
@@ -53,15 +53,15 @@ const LetterIntro = ({ onComplete }) => {
   return (
     <AnimatePresence>
       {!isExiting && (
-        <motion.div 
+        <motion.div
           className="letter-intro-overlay"
           exit={{ opacity: 0, scale: 1.5, filter: 'blur(20px)' }}
           transition={{ duration: 1.2 }}
         >
           <div className="hologram-grid"></div>
           <div className="scanlines"></div>
-          
-          <motion.div 
+
+          <motion.div
             className={`envelope-wrapper ${isGlitching ? 'glitch-active' : ''}`}
             initial={{ scale: 0.5, opacity: 0, rotateY: 90 }}
             animate={{ scale: 1, opacity: 1, rotateY: 0 }}
@@ -79,8 +79,8 @@ const LetterIntro = ({ onComplete }) => {
                   <span>ENCRYPTED</span>
                 </div>
               </div>
-              
-              <motion.div 
+
+              <motion.div
                 className="envelope-flap"
                 animate={{ rotateX: isOpen ? -160 : 0 }}
                 transition={{ duration: 0.6, ease: "easeInOut" }}
@@ -92,7 +92,7 @@ const LetterIntro = ({ onComplete }) => {
                   {[...Array(12)].map((_, i) => (
                     <CyberCrowParticle key={i} index={i} />
                   ))}
-                  <motion.div 
+                  <motion.div
                     className="hologram-letter"
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: -100, opacity: 1 }}
@@ -106,7 +106,7 @@ const LetterIntro = ({ onComplete }) => {
             </div>
 
             {!isOpen && (
-              <motion.button 
+              <motion.button
                 className="open-msg-btn"
                 onClick={handleOpen}
                 whileHover={{ scale: 1.05 }}

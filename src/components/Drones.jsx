@@ -42,22 +42,26 @@ const Drone = ({ id, onComplete, delay = 0 }) => {
 const Drones = () => {
   const [drones, setDrones] = useState([]);
 
-  const spawnSquad = () => {
-    const squadId = Date.now();
-    const newDrones = [0, 1, 2].map(i => ({
-      id: `${squadId}-${i}`,
-      delay: i * 2 // Staggered entry
-    }));
-    
-    setDrones(prev => [...prev, ...newDrones]);
-    
-    const nextSpawn = Math.random() * 20000 + 15000; // 15-35s between squads
-    return setTimeout(spawnSquad, nextSpawn);
-  };
-
   useEffect(() => {
-    const timeout = setTimeout(spawnSquad, 3000);
-    return () => clearTimeout(timeout);
+    let activeTimeout = null;
+
+    const spawnSquad = () => {
+      const squadId = Date.now();
+      const newDrones = [0, 1, 2].map(i => ({
+        id: `${squadId}-${i}`,
+        delay: i * 2 
+      }));
+      
+      setDrones(prev => [...prev, ...newDrones]);
+      
+      const nextSpawn = Math.random() * 20000 + 15000;
+      activeTimeout = setTimeout(spawnSquad, nextSpawn);
+    };
+
+    activeTimeout = setTimeout(spawnSquad, 3000);
+    return () => {
+      if (activeTimeout) clearTimeout(activeTimeout);
+    };
   }, []);
 
   const removeDrone = (id) => {

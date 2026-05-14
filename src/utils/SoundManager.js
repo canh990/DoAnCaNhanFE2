@@ -102,36 +102,60 @@ export const startRain = () => {
   const ctx = initAudio();
   if (!ctx || rainSource) return;
 
+  // Create a 4-second loopable stereo buffer
   const bufferSize = ctx.sampleRate * 4;
-  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-  const data = buffer.getChannelData(0);
-
-  let b0, b1, b2, b3, b4, b5, b6;
-  b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
-  for (let i = 0; i < bufferSize; i++) {
-    const white = Math.random() * 2 - 1;
-    b0 = 0.99886 * b0 + white * 0.0555179;
-    b1 = 0.99332 * b1 + white * 0.0750759;
-    b2 = 0.96900 * b2 + white * 0.1538520;
-    b3 = 0.86650 * b3 + white * 0.3104856;
-    b4 = 0.55000 * b4 + white * 0.5329522;
-    b5 = -0.7616 * b5 - white * 0.0168980;
-    data[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
-    data[i] *= 0.11;
-    b6 = white * 0.115926;
+  const buffer = ctx.createBuffer(2, bufferSize, ctx.sampleRate);
+  
+  // 1. Generate Brown/Pink noise for the "heavy" rain base (Stereo)
+  for (let channel = 0; channel < 2; channel++) {
+    const data = buffer.getChannelData(channel);
+    let b0, b1, b2, b3, b4, b5, b6;
+    b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
+    
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      // Pink noise algorithm
+      b0 = 0.99886 * b0 + white * 0.0555179;
+      b1 = 0.99332 * b1 + white * 0.0750759;
+      b2 = 0.96900 * b2 + white * 0.1538520;
+      b3 = 0.86650 * b3 + white * 0.3104856;
+      b4 = 0.55000 * b4 + white * 0.5329522;
+      b5 = -0.7616 * b5 - white * 0.0168980;
+      data[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+      data[i] *= 0.1; // Base volume
+      
+      // Add "patter" - sharp peaks for individual drops
+      if (Math.random() > 0.9992) {
+        data[i] += (Math.random() * 0.5);
+      }
+      
+      b6 = white * 0.115926;
+    }
   }
 
   rainSource = ctx.createBufferSource();
   rainSource.buffer = buffer;
   rainSource.loop = true;
 
+  // 2. Wind/Distance Modulation (Lowpass Filter)
   const filter = ctx.createBiquadFilter();
   filter.type = 'lowpass';
-  filter.frequency.value = 1200;
+  filter.frequency.setValueAtTime(1000, ctx.currentTime);
+  
+  // Periodic wind gust modulation
+  const osc = ctx.createOscillator();
+  const oscGain = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.value = 0.05; // Very slow (once every 20s)
+  oscGain.gain.value = 400; // Modulate frequency by 400Hz
+  osc.connect(oscGain);
+  oscGain.connect(filter.frequency);
+  osc.start();
 
+  // 3. Overall Gain with Fade-in
   rainGain = ctx.createGain();
   rainGain.gain.setValueAtTime(0, ctx.currentTime);
-  rainGain.gain.linearRampToValueAtTime(0.15, ctx.currentTime + 2); // Fade in over 2s
+  rainGain.gain.linearRampToValueAtTime(0.2, ctx.currentTime + 3); // 3s fade in
 
   rainSource.connect(filter);
   filter.connect(rainGain);
@@ -172,8 +196,8 @@ export const playThunderSound = () => {
   const now = ctx.currentTime;
   
   const dist = Math.random();
-  const volume = 1.0 - (dist * 0.6); 
-  const delay = dist * 0.8; 
+  const volume = 1.0 - (dist * 0.5); // Slightly louder base
+  const delay = 0; // Immediate impact as requested
   const rumbleFreq = 500 - (dist * 300); 
   
   const panValue = Math.random() * 2 - 1;

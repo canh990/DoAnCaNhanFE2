@@ -17,7 +17,7 @@
   position: absolute;
   width: 200%;
   height: 200%;
-  background-image: 
+  background-image:
     linear-gradient(rgba(123, 79, 182, 0.1) 1px, transparent 1px),
     linear-gradient(90deg, rgba(123, 79, 182, 0.1) 1px, transparent 1px);
   background-size: 50px 50px;
@@ -142,8 +142,19 @@
   width: 100%;
 }
 
-.btn-glitch-layers span:nth-child(2) { color: #ff00ff; left: 52%; clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%); animation: glitch-anim 0.4s infinite; }
-.btn-glitch-layers span:nth-child(3) { color: #00ffff; left: 48%; clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%); animation: glitch-anim 0.4s infinite reverse; }
+.btn-glitch-layers span:nth-child(2) {
+  color: #ff00ff;
+  left: 52%;
+  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+  animation: glitch-anim 0.4s infinite;
+}
+
+.btn-glitch-layers span:nth-child(3) {
+  color: #00ffff;
+  left: 48%;
+  clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+  animation: glitch-anim 0.4s infinite reverse;
+}
 
 /* Cyber Crow Particles */
 .cyber-crow-particle {
@@ -203,30 +214,70 @@
   z-index: 100;
 }
 
-.cinematic-bars.top { top: 0; }
-.cinematic-bars.bottom { bottom: 0; }
+.cinematic-bars.top {
+  top: 0;
+}
+
+.cinematic-bars.bottom {
+  bottom: 0;
+}
 
 @keyframes rotate-ring {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes pulse-energy {
-  0%, 100% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.1); opacity: 1; }
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
 }
 
 @keyframes glitch-anim {
-  0% { transform: translate(-50%, -50%) skew(0deg); }
-  20% { transform: translate(-52%, -48%) skew(10deg); }
-  40% { transform: translate(-48%, -52%) skew(-10deg); }
-  60% { transform: translate(-51%, -49%) skew(5deg); }
-  100% { transform: translate(-50%, -50%) skew(0deg); }
+  0% {
+    transform: translate(-50%, -50%) skew(0deg);
+  }
+
+  20% {
+    transform: translate(-52%, -48%) skew(10deg);
+  }
+
+  40% {
+    transform: translate(-48%, -52%) skew(-10deg);
+  }
+
+  60% {
+    transform: translate(-51%, -49%) skew(5deg);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) skew(0deg);
+  }
 }
 
 @keyframes smoke-pulse {
-  from { opacity: 0.4; transform: scale(0.8); }
-  to { opacity: 0.8; transform: scale(1.2); }
+  from {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+
+  to {
+    opacity: 0.8;
+    transform: scale(1.2);
+  }
 }
 
 /* Glitch state */
@@ -235,8 +286,23 @@
 }
 
 @keyframes global-glitch {
-  0% { transform: translate(0) scale(1); filter: hue-rotate(0deg); }
-  33% { transform: translate(5px, -5px) scale(1.02); filter: hue-rotate(90deg); }
-  66% { transform: translate(-5px, 5px) scale(0.98); filter: hue-rotate(180deg); }
-  100% { transform: translate(0) scale(1); filter: hue-rotate(0deg); }
+  0% {
+    transform: translate(0) scale(1);
+    filter: hue-rotate(0deg);
+  }
+
+  33% {
+    transform: translate(5px, -5px) scale(1.02);
+    filter: hue-rotate(90deg);
+  }
+
+  66% {
+    transform: translate(-5px, 5px) scale(0.98);
+    filter: hue-rotate(180deg);
+  }
+
+  100% {
+    transform: translate(0) scale(1);
+    filter: hue-rotate(0deg);
+  }
 }
