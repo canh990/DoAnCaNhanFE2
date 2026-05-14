@@ -225,3 +225,51 @@ export const playThunderSound = () => {
   createRumble(0.6, 0.4, 3, rumbleFreq * 0.7);
   createRumble(1.5, 0.3, 6, 80); 
 };
+
+export const stopRain = () => {
+  if (rainSource) {
+    try {
+      rainSource.stop();
+      rainSource.disconnect();
+    } catch (e) {
+      console.warn("Rain source already stopped");
+    }
+    rainSource = null;
+  }
+};
+
+export const playCrowSound = () => {
+  const ctx = initAudio();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+  
+  // Distant caw: higher pitch, distorted sine/square
+  const createCaw = (offset) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(400 + Math.random() * 100, now + offset);
+    osc.frequency.exponentialRampToValueAtTime(300, now + offset + 0.3);
+
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(800, now + offset);
+    filter.Q.value = 5;
+
+    gain.gain.setValueAtTime(0, now + offset);
+    gain.gain.linearRampToValueAtTime(0.05, now + offset + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.4);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(now + offset);
+    osc.stop(now + offset + 0.4);
+  };
+
+  createCaw(0);
+  if (Math.random() > 0.5) createCaw(0.2); // Double caw
+};

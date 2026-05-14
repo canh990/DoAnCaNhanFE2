@@ -6,6 +6,8 @@ import PixelCard from './components/PixelCard';
 import Typewriter from './components/Typewriter';
 import LetterIntro from './components/LetterIntro';
 import PixelModal from './components/PixelModal';
+import { playKeySound, startRain, stopRain } from './utils/SoundManager';
+import Crows from './components/Crows';
 import './App.css';
 
 function App() {
@@ -15,6 +17,8 @@ function App() {
   const [selectedItem, setSelectedItem] = useState(null);
   const [isDayMode, setIsDayMode] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [isRaining, setIsRaining] = useState(true);
+  const [isLightningEnabled, setIsLightningEnabled] = useState(true);
 
   // Simulate AJAX loading
   const handleTabChange = (tab) => {
@@ -24,6 +28,16 @@ function App() {
       setLoading(false);
     }, 400);
   };
+
+  useEffect(() => {
+    if (!showIntro) {
+      if (isRaining) {
+        startRain();
+      } else {
+        stopRain();
+      }
+    }
+  }, [isRaining, showIntro]);
 
   const getIcon = (tab) => {
     switch (tab) {
@@ -47,12 +61,23 @@ function App() {
         )}
       </AnimatePresence>
 
-      <CyberpunkCity isDayMode={isDayMode} />
+      <CyberpunkCity 
+        isDayMode={isDayMode} 
+        isRaining={isRaining} 
+        isLightningEnabled={isLightningEnabled} 
+      />
       
       {!showIntro && (
         <>
           {/* Settings Toggle */}
-          <div className="settings-container">
+          <div 
+            className="settings-container"
+            onMouseEnter={() => {
+              setShowSettings(true);
+              playKeySound();
+            }}
+            onMouseLeave={() => setShowSettings(false)}
+          >
             <button 
               className={`settings-btn ${showSettings ? 'active' : ''}`}
               onClick={() => setShowSettings(!showSettings)}
@@ -63,16 +88,46 @@ function App() {
               {showSettings && (
                 <motion.div 
                   className="settings-menu"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
+                  initial={{ opacity: 0, scale: 0.2, x: 50, rotate: 15 }}
+                  animate={{ opacity: 1, scale: 1, x: 0, rotate: 0 }}
+                  exit={{ opacity: 0, scale: 0.2, x: 50, rotate: -15 }}
+                  transition={{ 
+                    type: "spring", 
+                    stiffness: 400, 
+                    damping: 25,
+                    opacity: { duration: 0.2 }
+                  }}
                 >
+                  <div className="settings-header">HỆ_THỐNG_TÙY_CHỈNH</div>
                   <button 
                     className="pixel-button small"
-                    onClick={() => setIsDayMode(!isDayMode)}
+                    onClick={() => {
+                      setIsDayMode(!isDayMode);
+                      playKeySound();
+                    }}
                   >
                     {isDayMode ? <Moon size={14} /> : <Sun size={14} />}
                     {isDayMode ? ' CHẾ ĐỘ ĐÊM' : ' CHẾ ĐỘ NGÀY'}
+                  </button>
+                  <button 
+                    className="pixel-button small"
+                    onClick={() => {
+                      setIsRaining(!isRaining);
+                      playKeySound();
+                    }}
+                  >
+                    <Zap size={14} />
+                    {isRaining ? ' TẮT MƯA' : ' BẬT MƯA'}
+                  </button>
+                  <button 
+                    className="pixel-button small"
+                    onClick={() => {
+                      setIsLightningEnabled(!isLightningEnabled);
+                      playKeySound();
+                    }}
+                  >
+                    <Cpu size={14} />
+                    {isLightningEnabled ? ' TẮT SẤM SÉT' : ' BẬT SẤM SÉT'}
                   </button>
                 </motion.div>
               )}
@@ -271,6 +326,8 @@ function App() {
           >
             <p>{selectedItem?.content}</p>
           </PixelModal>
+
+          <Crows />
         </>
       )}
     </div>

@@ -210,7 +210,8 @@
 }
 
 .city-background.day-mode .rain-drop {
-  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.4));
+  width: 2px;
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.8));
 }
 
 .city-background.day-mode .bottom-fog {

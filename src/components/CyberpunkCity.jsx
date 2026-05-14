@@ -2,15 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { playThunderSound } from '../utils/SoundManager';
 import './CyberpunkCity.css';
 
-const CyberpunkCity = ({ isDayMode }) => {
+const CyberpunkCity = ({ isDayMode, isRaining, isLightningEnabled }) => {
   const [isFlashing, setIsFlashing] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
   const [lightningPos, setLightningPos] = useState({ left: '50%', top: '0%' });
 
   useEffect(() => {
-    // Sấm sét chỉ xuất hiện ban đêm hoặc theo kịch bản u ám
-    if (isDayMode) return; 
+    // Sấm sét chỉ xuất hiện khi được bật, trời mưa và u ám
+    if (isDayMode || !isRaining || !isLightningEnabled) return; 
 
+    let activeTimeout = null;
+    
     const triggerLightningStrike = () => {
       setLightningPos({ left: Math.random() * 80 + 10 + '%', top: Math.random() * 10 + '%' });
       setIsFlashing(true);
@@ -18,10 +20,12 @@ const CyberpunkCity = ({ isDayMode }) => {
       playThunderSound();
       
       setTimeout(() => {
+        if (!isLightningEnabled) return;
         setIsFlashing(false);
         const extraStrikes = Math.random() > 0.5 ? 2 : 1;
         for (let i = 1; i <= extraStrikes; i++) {
           setTimeout(() => {
+            if (!isLightningEnabled) return;
             setIsFlashing(true);
             setTimeout(() => setIsFlashing(false), 50);
           }, i * 150);
@@ -34,18 +38,22 @@ const CyberpunkCity = ({ isDayMode }) => {
 
     const autoLightning = () => {
       const delay = Math.random() * 8000 + 4000;
-      const timeout = setTimeout(() => {
+      activeTimeout = setTimeout(() => {
         triggerLightningStrike();
         autoLightning();
       }, delay);
     };
 
-    const timeout = setTimeout(autoLightning, 5000);
+    activeTimeout = setTimeout(autoLightning, 5000);
+    
     return () => {
-      clearTimeout(timeout);
+      if (activeTimeout) clearTimeout(activeTimeout);
       delete window.triggerLightningStrike;
+      // Reset states immediately
+      setIsFlashing(false);
+      setIsShaking(false);
     };
-  }, []);
+  }, [isDayMode, isRaining, isLightningEnabled]);
 
   return (
     <div className={`city-background ${isDayMode ? 'day-mode' : ''} ${isFlashing ? 'flash' : ''} ${isShaking ? 'shake-all' : ''}`}>
@@ -92,16 +100,18 @@ const CyberpunkCity = ({ isDayMode }) => {
       </div>
 
       {/* Atmospheric Effects */}
-      <div className="rain-layer">
-        {[...Array(80)].map((_, i) => (
-          <div key={i} className="rain-drop" style={{
-            left: Math.random() * 100 + '%',
-            animationDelay: Math.random() * 2 + 's',
-            animationDuration: 0.5 + Math.random() * 0.5 + 's',
-            opacity: 0.1 + Math.random() * 0.2
-          }}></div>
-        ))}
-      </div>
+      {isRaining && (
+        <div className="rain-layer">
+          {[...Array(80)].map((_, i) => (
+            <div key={i} className="rain-drop" style={{
+              left: Math.random() * 100 + '%',
+              animationDelay: Math.random() * 2 + 's',
+              animationDuration: 0.5 + Math.random() * 0.5 + 's',
+              opacity: isDayMode ? (0.4 + Math.random() * 0.3) : (0.1 + Math.random() * 0.2)
+            }}></div>
+          ))}
+        </div>
+      )}
 
       {/* Lightning Overlay */}
       {isFlashing && (
