@@ -5,26 +5,32 @@ import avatar2 from '../assets/avatar2.png';
 import avatar3 from '../assets/avatar3.png';
 import './CyberAvatar.css';
 
-const avatars = [avatar1, avatar2, avatar3];
-
-const CyberAvatar = () => {
+const CyberAvatar = ({ avatars, forcedIndex }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isGlitching, setIsGlitching] = useState(false);
 
   useEffect(() => {
+    if (forcedIndex !== undefined) {
+      setCurrentIndex(forcedIndex);
+    }
+  }, [forcedIndex]);
+
+  useEffect(() => {
     const glitchInterval = setInterval(() => {
-      // Small chance to glitch and change avatar
+      // Small chance to glitch
       if (Math.random() > 0.8) {
         setIsGlitching(true);
         setTimeout(() => {
-          setCurrentIndex(prev => (prev + 1) % avatars.length);
+          if (forcedIndex === undefined) {
+            setCurrentIndex(prev => (prev + 1) % avatars.length);
+          }
           setIsGlitching(false);
         }, 150 + Math.random() * 200);
       }
     }, 5000);
 
     return () => clearInterval(glitchInterval);
-  }, []);
+  }, [forcedIndex]);
 
   return (
     <div className={`avatar-container ${isGlitching ? 'glitch-active' : ''}`}>

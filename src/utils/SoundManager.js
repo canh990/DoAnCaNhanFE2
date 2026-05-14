@@ -90,11 +90,13 @@ export const playOpenSound = () => {
   clickOsc.frequency.exponentialRampToValueAtTime(10, now + 0.08);
   clickGainNode.gain.setValueAtTime(0.3, now); // More distinct click
   clickGainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
-  clickOsc.connect(clickGainNode);
   clickGainNode.connect(ctx.destination);
+  clickOsc.connect(clickGainNode);
   clickOsc.start(now);
   clickOsc.stop(now + 0.08);
 };
+
+let rainGain = null;
 
 export const startRain = () => {
   const ctx = initAudio();
@@ -127,13 +129,40 @@ export const startRain = () => {
   filter.type = 'lowpass';
   filter.frequency.value = 1200;
 
-  const gain = ctx.createGain();
-  gain.gain.value = 0.15; 
+  rainGain = ctx.createGain();
+  rainGain.gain.setValueAtTime(0, ctx.currentTime);
+  rainGain.gain.linearRampToValueAtTime(0.15, ctx.currentTime + 2); // Fade in over 2s
 
   rainSource.connect(filter);
-  filter.connect(gain);
-  gain.connect(ctx.destination);
+  filter.connect(rainGain);
+  rainGain.connect(ctx.destination);
   rainSource.start();
+};
+
+export const stopRain = () => {
+  if (rainSource && rainGain) {
+    const ctx = sharedAudioCtx;
+    const now = ctx.currentTime;
+    rainGain.gain.cancelScheduledValues(now);
+    rainGain.gain.setValueAtTime(rainGain.gain.value, now);
+    rainGain.gain.linearRampToValueAtTime(0, now + 2); // Fade out over 2s
+    
+    const sourceToStop = rainSource;
+    const gainToStop = rainGain;
+    
+    setTimeout(() => {
+      try {
+        sourceToStop.stop();
+        sourceToStop.disconnect();
+        gainToStop.disconnect();
+      } catch (e) {
+        console.warn("Rain source stop error:", e);
+      }
+    }, 2100);
+
+    rainSource = null;
+    rainGain = null;
+  }
 };
 
 export const playThunderSound = () => {
@@ -226,17 +255,7 @@ export const playThunderSound = () => {
   createRumble(1.5, 0.3, 6, 80); 
 };
 
-export const stopRain = () => {
-  if (rainSource) {
-    try {
-      rainSource.stop();
-      rainSource.disconnect();
-    } catch (e) {
-      console.warn("Rain source already stopped");
-    }
-    rainSource = null;
-  }
-};
+
 
 export const playCrowSound = () => {
   const ctx = initAudio();

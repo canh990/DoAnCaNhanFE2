@@ -9,6 +9,11 @@ import PixelModal from './components/PixelModal';
 import { playKeySound, startRain, stopRain } from './utils/SoundManager';
 import Crows from './components/Crows';
 import CyberAvatar from './components/CyberAvatar';
+import CursorTrail from './components/CursorTrail';
+import CustomCursor from './components/CustomCursor';
+import avatar1 from './assets/avatar1.png';
+import avatar2 from './assets/avatar2.png';
+import avatar3 from './assets/avatar3.png';
 import './App.css';
 
 function App() {
@@ -22,6 +27,108 @@ function App() {
   const [isLightningEnabled, setIsLightningEnabled] = useState(true);
   const [crowDensity, setCrowDensity] = useState(5);
   const [isGrainEnabled, setIsGrainEnabled] = useState(false);
+  const [isTrailEnabled, setIsTrailEnabled] = useState(false);
+  const [isCustomCursorEnabled, setIsCustomCursorEnabled] = useState(false);
+  const [avatarIndex, setAvatarIndex] = useState(() => {
+    return parseInt(localStorage.getItem('cyber_avatar_index') || '0');
+  });
+  const [avatars, setAvatars] = useState([]);
+
+  // Save selected index to localStorage
+  useEffect(() => {
+    localStorage.setItem('cyber_avatar_index', avatarIndex.toString());
+  }, [avatarIndex]);
+
+  // Fetch avatars from MySQL on mount
+  useEffect(() => {
+    fetch('http://localhost:5000/api/avatars')
+      .then(res => res.json())
+      .then(data => {
+        if (data.length > 0) {
+          // Map to just the image strings for compatibility with existing UI
+          setAvatars(data.map(item => item.image_data));
+          // We might also want to store IDs for deletion, so let's adjust the state
+          setAvatarObjects(data);
+        } else {
+          // If DB is empty, use defaults
+          setAvatars([avatar1, avatar2, avatar3]);
+          setAvatarObjects([
+            { id: 'd1', image_data: avatar1 },
+            { id: 'd2', image_data: avatar2 },
+            { id: 'd3', image_data: avatar3 }
+          ]);
+        }
+      })
+      .catch(err => {
+        console.error("Server connection failed, using local defaults", err);
+        setAvatars([avatar1, avatar2, avatar3]);
+      });
+  }, []);
+
+  const [avatarObjects, setAvatarObjects] = useState([]);
+
+  const handleAvatarUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64 = event.target.result;
+        
+        // POST to MySQL
+        fetch('http://localhost:5000/api/avatars', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image_data: base64 })
+        })
+        .then(res => {
+          if (!res.ok) throw new Error('Server error');
+          return res.json();
+        })
+        .then(newAvatar => {
+          setAvatars(prev => {
+            const next = [...prev, newAvatar.image_data];
+            setAvatarIndex(next.length - 1); // Set to the newly added avatar
+            return next;
+          });
+          setAvatarObjects(prev => [...prev, newAvatar]);
+          playKeySound();
+        })
+        .catch(err => {
+          console.error("Upload to server failed:", err);
+          alert("Lỗi: Không thể kết nối tới Server. Hãy đảm bảo bạn đã chạy 'node index.js' trong thư mục server.");
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const deleteAvatar = (index) => {
+    const target = avatarObjects[index];
+    if (!target) return;
+    if (avatars.length <= 1) return;
+
+    // DELETE from MySQL if it's a real ID
+    if (typeof target.id === 'number') {
+      fetch(`http://localhost:5000/api/avatars/${target.id}`, { method: 'DELETE' })
+        .then(() => {
+          updateLocalAvatarState(index);
+        })
+        .catch(err => console.error("Delete failed:", err));
+    } else {
+      // Just local delete for defaults
+      updateLocalAvatarState(index);
+    }
+  };
+
+  const updateLocalAvatarState = (index) => {
+    const newAvatars = avatars.filter((_, i) => i !== index);
+    const newObjects = avatarObjects.filter((_, i) => i !== index);
+    setAvatars(newAvatars);
+    setAvatarObjects(newObjects);
+    if (avatarIndex >= index && avatarIndex > 0) {
+      setAvatarIndex(avatarIndex - 1);
+    }
+  };
 
   // Simulate AJAX loading
   const handleTabChange = (tab) => {
@@ -57,7 +164,8 @@ function App() {
   };
 
   return (
-    <div className={`app-root ${isDayMode ? 'day-mode' : ''}`}>
+    <div className={`app-root ${isDayMode ? 'day-mode' : ''} ${!isCustomCursorEnabled ? 'system-cursor' : ''}`}>
+      {isCustomCursorEnabled && <CustomCursor />}
       <AnimatePresence>
         {showIntro && (
           <LetterIntro onComplete={() => setShowIntro(false)} />
@@ -157,6 +265,56 @@ function App() {
                     <Ghost size={14} />
                     {isGrainEnabled ? ' TẮT NHIỄU HẠT' : ' BẬT NHIỄU HẠT'}
                   </button>
+
+                  <button 
+                    className="pixel-button small"
+                    onClick={() => {
+                      setIsTrailEnabled(!isTrailEnabled);
+                      playKeySound();
+                    }}
+                  >
+                    <Zap size={14} />
+                    {isTrailEnabled ? ' TẮT VỆT CHUỘT' : ' BẬT VỆT CHUỘT'}
+                  </button>
+
+                  <button 
+                    className="pixel-button small"
+                    onClick={() => {
+                      setIsCustomCursorEnabled(!isCustomCursorEnabled);
+                      playKeySound();
+                    }}
+                  >
+                    <Settings size={14} />
+                    {isCustomCursorEnabled ? ' DÙNG CHUỘT GỐC' : ' DÙNG CHUỘT PIXEL'}
+                  </button>
+
+                  <div className="setting-item">
+                    <div className="setting-label">QUẢN LÝ AVATAR:</div>
+                    <div className="avatar-grid">
+                      {avatars.map((img, i) => (
+                        <div key={i} className={`avatar-item ${avatarIndex === i ? 'active' : ''}`}>
+                          <img 
+                            src={img} 
+                            alt={`Avatar ${i}`} 
+                            onClick={() => setAvatarIndex(i)}
+                          />
+                          <button 
+                            className="delete-avatar-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteAvatar(i);
+                            }}
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                      <label className="avatar-upload-label">
+                        +
+                        <input type="file" accept="image/*" onChange={handleAvatarUpload} hidden />
+                      </label>
+                    </div>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -169,7 +327,7 @@ function App() {
               transition={{ duration: 0.8 }}
               className="header-content"
             >
-              <CyberAvatar />
+              <CyberAvatar avatars={avatars} forcedIndex={avatarIndex} />
               <h1>Dev_Canh.exe</h1>
               <p className="subtitle">Pháp Sư Fullstack Cấp 25</p>
             </motion.div>
@@ -357,6 +515,7 @@ function App() {
 
           <Crows density={crowDensity} />
           {isGrainEnabled && <div className="film-grain"></div>}
+          {isTrailEnabled && <CursorTrail isDayMode={isDayMode} />}
         </>
       )}
     </div>
