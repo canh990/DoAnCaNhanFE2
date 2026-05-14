@@ -103,18 +103,16 @@ const CyberpunkCity = ({ isDayMode, isRaining, isLightningEnabled }) => {
       </div>
 
       {/* Atmospheric Effects */}
-      {isRaining && (
-        <div className="rain-layer">
-          {[...Array(80)].map((_, i) => (
-            <div key={i} className="rain-drop" style={{
-              left: Math.random() * 100 + '%',
-              animationDelay: Math.random() * 2 + 's',
-              animationDuration: 0.5 + Math.random() * 0.5 + 's',
-              opacity: isDayMode ? (0.4 + Math.random() * 0.3) : (0.1 + Math.random() * 0.2)
-            }}></div>
-          ))}
-        </div>
-      )}
+      <div className={`rain-layer ${isRaining ? 'active' : ''}`}>
+        {[...Array(80)].map((_, i) => (
+          <div key={i} className="rain-drop" style={{
+            left: Math.random() * 100 + '%',
+            animationDelay: Math.random() * 2 + 's',
+            animationDuration: 0.5 + Math.random() * 0.5 + 's',
+            opacity: isDayMode ? (0.4 + Math.random() * 0.3) : (0.1 + Math.random() * 0.2)
+          }}></div>
+        ))}
+      </div>
 
       {/* Lightning Overlay */}
       {isFlashing && (

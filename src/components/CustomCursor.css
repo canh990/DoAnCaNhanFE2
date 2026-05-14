@@ -1,0 +1,77 @@
+.custom-cursor {
+  position: fixed;
+  width: 24px;
+  height: 24px;
+  pointer-events: none;
+  z-index: 100000;
+  transform: translate(-5px, -5px); /* Offset to point correctly */
+  transition: transform 0.1s ease-out;
+}
+
+.cursor-main {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  clip-path: polygon(0 0, 100% 70%, 50% 70%, 70% 100%, 40% 100%, 20% 70%, 0 70%);
+  box-shadow: 0 0 10px #00ffff;
+}
+
+.cursor-outline {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #00ffff;
+  clip-path: polygon(0 0, 100% 70%, 50% 70%, 70% 100%, 40% 100%, 20% 70%, 0 70%);
+  opacity: 0.5;
+  animation: cursor-glow 1s infinite alternate;
+}
+
+@keyframes cursor-glow {
+  from { filter: drop-shadow(0 0 2px #00ffff); }
+  to { filter: drop-shadow(0 0 8px #ff00ff); }
+}
+
+.custom-cursor.pointer {
+  transform: translate(-5px, -5px) scale(1.4);
+}
+
+.custom-cursor.pointer .cursor-main {
+  background: #00ffff;
+}
+
+.custom-cursor.clicking {
+  transform: translate(-5px, -5px) scale(0.8);
+}
+
+.cursor-glitch {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #ff00ff;
+  opacity: 0;
+  clip-path: polygon(0 0, 100% 70%, 50% 70%, 70% 100%, 40% 100%, 20% 70%, 0 70%);
+}
+
+.custom-cursor.clicking .cursor-glitch {
+  animation: glitch-cursor 0.2s infinite;
+  opacity: 0.8;
+}
+
+@keyframes glitch-cursor {
+  0% { transform: translate(0); }
+  50% { transform: translate(5px, -2px); }
+  100% { transform: translate(-3px, 3px); }
+}
+
+/* Hide native cursor only when NOT in system-cursor mode */
+.app-root:not(.system-cursor), 
+.app-root:not(.system-cursor) * {
+  cursor: none !important;
+}
+
+
