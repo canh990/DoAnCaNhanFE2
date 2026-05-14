@@ -45,17 +45,19 @@ const Crow = ({ id, onComplete, delay = 0, depth = 1 }) => {
   );
 };
 
-const Crows = () => {
+const Crows = ({ density = 5 }) => {
   const [flocks, setFlocks] = useState([]);
 
   const spawnFlock = useCallback(() => {
+    if (density === 0) return;
+    
     const flockId = Date.now();
-    const birdCount = Math.floor(Math.random() * 5) + 3; // 3-7 birds per flock
-    const depth = Math.random() * 1.5 + 0.5; // Depth factor
+    const birdCount = Math.floor(Math.random() * 3) + 2; // Fewer birds per flock for better performance
+    const depth = Math.random() * 1.5 + 0.5;
     
     const newBirds = Array.from({ length: birdCount }).map((_, i) => ({
       id: `${flockId}-${i}`,
-      delay: i * (Math.random() * 0.5 + 0.2), // Staggered entry
+      delay: i * (Math.random() * 0.5 + 0.2),
       depth: depth + (Math.random() * 0.2 - 0.1)
     }));
 
@@ -64,18 +66,27 @@ const Crows = () => {
     if (Math.random() > 0.4) {
         setTimeout(playCrowSound, Math.random() * 2000);
     }
-  }, []);
+  }, [density]);
 
   useEffect(() => {
+    if (density === 0) {
+      setFlocks([]);
+      return;
+    }
+
+    // Interval scaled by density (10 is fast, 1 is slow)
+    const baseInterval = 12000;
+    const currentInterval = baseInterval / (density * 0.5 + 0.5);
+
     const interval = setInterval(() => {
-      if (Math.random() > 0.6) spawnFlock();
-    }, 4000);
+      if (Math.random() > 0.3) spawnFlock();
+    }, currentInterval);
 
     // Initial spawn
     spawnFlock();
 
     return () => clearInterval(interval);
-  }, [spawnFlock]);
+  }, [spawnFlock, density]);
 
   const removeBird = (id) => {
     setFlocks(prev => prev.filter(b => b.id !== id));

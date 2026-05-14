@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { playThunderSound } from '../utils/SoundManager';
+import Drones from './Drones';
 import './CyberpunkCity.css';
 
 const CyberpunkCity = ({ isDayMode, isRaining, isLightningEnabled }) => {
@@ -8,8 +9,8 @@ const CyberpunkCity = ({ isDayMode, isRaining, isLightningEnabled }) => {
   const [lightningPos, setLightningPos] = useState({ left: '50%', top: '0%' });
 
   useEffect(() => {
-    // Sấm sét chỉ xuất hiện khi được bật, trời mưa và u ám
-    if (isDayMode || !isRaining || !isLightningEnabled) return; 
+    // Sấm sét chỉ xuất hiện khi được bật
+    if (!isLightningEnabled) return; 
 
     let activeTimeout = null;
     
@@ -37,14 +38,14 @@ const CyberpunkCity = ({ isDayMode, isRaining, isLightningEnabled }) => {
     window.triggerLightningStrike = triggerLightningStrike;
 
     const autoLightning = () => {
-      const delay = Math.random() * 8000 + 4000;
+      const delay = Math.random() * 3000 + 2000; // 2-5s for testing
       activeTimeout = setTimeout(() => {
         triggerLightningStrike();
         autoLightning();
       }, delay);
     };
 
-    activeTimeout = setTimeout(autoLightning, 5000);
+    activeTimeout = setTimeout(autoLightning, 1000);
     
     return () => {
       if (activeTimeout) clearTimeout(activeTimeout);
@@ -87,6 +88,8 @@ const CyberpunkCity = ({ isDayMode, isRaining, isLightningEnabled }) => {
           </div>
         ))}
       </div>
+
+      <Drones />
 
       {/* Layer 4: Near Silhouettes */}
       <div className="buildings-near">

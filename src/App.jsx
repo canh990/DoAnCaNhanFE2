@@ -19,6 +19,8 @@ function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [isRaining, setIsRaining] = useState(true);
   const [isLightningEnabled, setIsLightningEnabled] = useState(true);
+  const [crowDensity, setCrowDensity] = useState(5);
+  const [isGrainEnabled, setIsGrainEnabled] = useState(true);
 
   // Simulate AJAX loading
   const handleTabChange = (tab) => {
@@ -128,6 +130,31 @@ function App() {
                   >
                     <Cpu size={14} />
                     {isLightningEnabled ? ' TẮT SẤM SÉT' : ' BẬT SẤM SÉT'}
+                  </button>
+
+                  <div className="setting-item">
+                    <div className="setting-label">
+                      <span>MẬT ĐỘ QUẠ: {crowDensity}</span>
+                    </div>
+                    <input 
+                      type="range" 
+                      min="0" 
+                      max="10" 
+                      value={crowDensity} 
+                      onChange={(e) => setCrowDensity(parseInt(e.target.value))}
+                      className="pixel-slider"
+                    />
+                  </div>
+
+                  <button 
+                    className="pixel-button small"
+                    onClick={() => {
+                      setIsGrainEnabled(!isGrainEnabled);
+                      playKeySound();
+                    }}
+                  >
+                    <Ghost size={14} />
+                    {isGrainEnabled ? ' TẮT NHIỄU HẠT' : ' BẬT NHIỄU HẠT'}
                   </button>
                 </motion.div>
               )}
@@ -327,7 +354,8 @@ function App() {
             <p>{selectedItem?.content}</p>
           </PixelModal>
 
-          <Crows />
+          <Crows density={crowDensity} />
+          {isGrainEnabled && <div className="film-grain"></div>}
         </>
       )}
     </div>
