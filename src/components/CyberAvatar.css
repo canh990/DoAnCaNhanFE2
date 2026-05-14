@@ -1,0 +1,103 @@
+.avatar-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar-frame {
+  width: 80px;
+  height: 80px;
+  background: #1a0b2e;
+  border: 3px solid #7b4fb6;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(123, 79, 182, 0.5);
+  image-rendering: pixelated;
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(123, 79, 182, 0.1) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.scanline-tiny {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: rgba(0, 255, 255, 0.3);
+  animation: scanline-move 3s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes scanline-move {
+  from { top: -100%; }
+  to { top: 100%; }
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  color: #00ffff;
+  letter-spacing: 1px;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  background: #00ff00;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #00ff00;
+  animation: pulse-dot 1.5s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Glitch Effect */
+.glitch-active .avatar-frame {
+  animation: avatar-glitch 0.2s infinite;
+  border-color: #00ffff;
+}
+
+@keyframes avatar-glitch {
+  0% { transform: translate(0); filter: hue-rotate(0deg); }
+  25% { transform: translate(3px, -2px); filter: hue-rotate(90deg) brightness(1.5); }
+  50% { transform: translate(-3px, 2px); filter: hue-rotate(180deg) contrast(2); }
+  75% { transform: translate(2px, 2px); filter: hue-rotate(270deg) invert(1); }
+  100% { transform: translate(0); }
+}
+
+/* Day Mode Adjustments */
+.app-root.day-mode .avatar-frame {
+  border-color: #f7941d;
+  box-shadow: 0 0 15px rgba(247, 148, 29, 0.4);
+}
+
+.app-root.day-mode .status-indicator {
+  color: #a04000;
+}
+
+.app-root.day-mode .status-dot {
+  background: #d35400;
+  box-shadow: 0 0 8px #d35400;
+}
