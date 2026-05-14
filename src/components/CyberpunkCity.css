@@ -246,3 +246,24 @@
   z-index: 6;
   opacity: 0.8;
 }
+
+.glitch-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 255, 255, 0.1);
+  z-index: 10000;
+  pointer-events: none;
+  animation: screen-glitch 0.2s infinite;
+}
+
+@keyframes screen-glitch {
+  0% { clip-path: inset(80% 0 0 0); transform: translateX(-10px); filter: hue-rotate(90deg); }
+  20% { clip-path: inset(20% 0 50% 0); transform: translateX(10px); }
+  40% { clip-path: inset(40% 0 40% 0); transform: translateX(-5px); filter: invert(0.1); }
+  60% { clip-path: inset(0 0 80% 0); transform: translateX(5px); }
+  80% { clip-path: inset(50% 0 20% 0); transform: translateX(-10px); }
+  100% { clip-path: inset(0 0 0 0); transform: translateX(0); }
+}

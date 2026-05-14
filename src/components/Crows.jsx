@@ -8,7 +8,7 @@ const Crow = ({ id, onComplete, delay = 0, depth = 1 }) => {
   const [yStart] = useState(Math.random() * 50 + 10);
   const [yEnd] = useState(yStart + (Math.random() * 30 - 15));
   const [duration] = useState((Math.random() * 4 + 6) * depth); // Farther birds move slower
-  const [size] = useState((Math.random() * 0.4 + 0.6) / depth);
+  const [size] = useState((Math.random() * 0.6 + 1.2) / depth);
   const [opacity] = useState(1.1 - depth * 0.3);
   const [blur] = useState((depth - 1) * 2);
 

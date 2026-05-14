@@ -11,6 +11,7 @@ import Crows from './components/Crows';
 import CyberAvatar from './components/CyberAvatar';
 import CursorTrail from './components/CursorTrail';
 import CustomCursor from './components/CustomCursor';
+import MatrixBackground from './components/MatrixBackground';
 import avatar1 from './assets/avatar1.png';
 import avatar2 from './assets/avatar2.png';
 import avatar3 from './assets/avatar3.png';
@@ -29,10 +30,29 @@ function App() {
   const [isGrainEnabled, setIsGrainEnabled] = useState(false);
   const [isTrailEnabled, setIsTrailEnabled] = useState(false);
   const [isCustomCursorEnabled, setIsCustomCursorEnabled] = useState(false);
+  const [isMatrixMode, setIsMatrixMode] = useState(false);
+  const [keySequence, setKeySequence] = useState('');
   const [avatarIndex, setAvatarIndex] = useState(() => {
     return parseInt(localStorage.getItem('cyber_avatar_index') || '0');
   });
   const [avatars, setAvatars] = useState([]);
+  const [avatarObjects, setAvatarObjects] = useState([]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      const char = e.key.toUpperCase();
+      const newSequence = (keySequence + char).slice(-4);
+      setKeySequence(newSequence);
+
+      if (newSequence === 'CANH') {
+        setIsMatrixMode(prev => !prev);
+        setKeySequence('');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [keySequence]);
 
   // Save selected index to localStorage
   useEffect(() => {
@@ -65,38 +85,36 @@ function App() {
       });
   }, []);
 
-  const [avatarObjects, setAvatarObjects] = useState([]);
-
   const handleAvatarUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (event) => {
         const base64 = event.target.result;
-        
+
         // POST to MySQL
         fetch('http://localhost:5000/api/avatars', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ image_data: base64 })
         })
-        .then(res => {
-          if (!res.ok) throw new Error('Server error');
-          return res.json();
-        })
-        .then(newAvatar => {
-          setAvatars(prev => {
-            const next = [...prev, newAvatar.image_data];
-            setAvatarIndex(next.length - 1); // Set to the newly added avatar
-            return next;
+          .then(res => {
+            if (!res.ok) throw new Error('Server error');
+            return res.json();
+          })
+          .then(newAvatar => {
+            setAvatars(prev => {
+              const next = [...prev, newAvatar.image_data];
+              setAvatarIndex(next.length - 1); // Set to the newly added avatar
+              return next;
+            });
+            setAvatarObjects(prev => [...prev, newAvatar]);
+            playKeySound();
+          })
+          .catch(err => {
+            console.error("Upload to server failed:", err);
+            alert("Lỗi: Không thể kết nối tới Server. Hãy đảm bảo bạn đã chạy 'node index.js' trong thư mục server.");
           });
-          setAvatarObjects(prev => [...prev, newAvatar]);
-          playKeySound();
-        })
-        .catch(err => {
-          console.error("Upload to server failed:", err);
-          alert("Lỗi: Không thể kết nối tới Server. Hãy đảm bảo bạn đã chạy 'node index.js' trong thư mục server.");
-        });
       };
       reader.readAsDataURL(file);
     }
@@ -110,10 +128,17 @@ function App() {
     // DELETE from MySQL if it's a real ID
     if (typeof target.id === 'number') {
       fetch(`http://localhost:5000/api/avatars/${target.id}`, { method: 'DELETE' })
-        .then(() => {
+        .then(res => res.json())
+        .then(data => {
+          if (data.message) {
+            alert(data.message);
+          }
           updateLocalAvatarState(index);
         })
-        .catch(err => console.error("Delete failed:", err));
+        .catch(err => {
+          console.error("Delete failed:", err);
+          alert("Lỗi khi xóa ảnh khỏi database.");
+        });
     } else {
       // Just local delete for defaults
       updateLocalAvatarState(index);
@@ -172,16 +197,30 @@ function App() {
         )}
       </AnimatePresence>
 
-      <CyberpunkCity 
-        isDayMode={isDayMode} 
-        isRaining={isRaining} 
-        isLightningEnabled={isLightningEnabled} 
-      />
-      
+      {isMatrixMode ? (
+        <MatrixBackground />
+      ) : (
+        <CyberpunkCity
+          isDayMode={isDayMode}
+          isRaining={isRaining}
+          isLightningEnabled={isLightningEnabled}
+        />
+      )}
+
+      {isMatrixMode && (
+        <motion.div 
+          initial={{ opacity: 0, scale: 2 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="matrix-alert"
+        >
+          [ ACCESS_GRANTED: MATRIX_OVERRIDE ]
+        </motion.div>
+      )}
+
       {!showIntro && (
         <>
           {/* Settings Toggle */}
-          <div 
+          <div
             className="settings-container"
             onMouseEnter={() => {
               setShowSettings(true);
@@ -189,7 +228,7 @@ function App() {
             }}
             onMouseLeave={() => setShowSettings(false)}
           >
-            <button 
+            <button
               className={`settings-btn ${showSettings ? 'active' : ''}`}
               onClick={() => setShowSettings(!showSettings)}
             >
@@ -197,20 +236,20 @@ function App() {
             </button>
             <AnimatePresence>
               {showSettings && (
-                <motion.div 
+                <motion.div
                   className="settings-menu"
                   initial={{ opacity: 0, scale: 0.2, x: 50, rotate: 15 }}
                   animate={{ opacity: 1, scale: 1, x: 0, rotate: 0 }}
                   exit={{ opacity: 0, scale: 0.2, x: 50, rotate: -15 }}
-                  transition={{ 
-                    type: "spring", 
-                    stiffness: 400, 
+                  transition={{
+                    type: "spring",
+                    stiffness: 400,
                     damping: 25,
                     opacity: { duration: 0.2 }
                   }}
                 >
                   <div className="settings-header">HỆ_THỐNG_TÙY_CHỈNH</div>
-                  <button 
+                  <button
                     className="pixel-button small"
                     onClick={() => {
                       setIsDayMode(!isDayMode);
@@ -220,7 +259,7 @@ function App() {
                     {isDayMode ? <Moon size={14} /> : <Sun size={14} />}
                     {isDayMode ? ' CHẾ ĐỘ ĐÊM' : ' CHẾ ĐỘ NGÀY'}
                   </button>
-                  <button 
+                  <button
                     className="pixel-button small"
                     onClick={() => {
                       setIsRaining(!isRaining);
@@ -230,7 +269,7 @@ function App() {
                     <Zap size={14} />
                     {isRaining ? ' TẮT MƯA' : ' BẬT MƯA'}
                   </button>
-                  <button 
+                  <button
                     className="pixel-button small"
                     onClick={() => {
                       setIsLightningEnabled(!isLightningEnabled);
@@ -245,17 +284,17 @@ function App() {
                     <div className="setting-label">
                       <span>MẬT ĐỘ QUẠ: {crowDensity}</span>
                     </div>
-                    <input 
-                      type="range" 
-                      min="0" 
-                      max="10" 
-                      value={crowDensity} 
+                    <input
+                      type="range"
+                      min="0"
+                      max="10"
+                      value={crowDensity}
                       onChange={(e) => setCrowDensity(parseInt(e.target.value))}
                       className="pixel-slider"
                     />
                   </div>
 
-                  <button 
+                  <button
                     className="pixel-button small"
                     onClick={() => {
                       setIsGrainEnabled(!isGrainEnabled);
@@ -266,7 +305,7 @@ function App() {
                     {isGrainEnabled ? ' TẮT NHIỄU HẠT' : ' BẬT NHIỄU HẠT'}
                   </button>
 
-                  <button 
+                  <button
                     className="pixel-button small"
                     onClick={() => {
                       setIsTrailEnabled(!isTrailEnabled);
@@ -277,7 +316,7 @@ function App() {
                     {isTrailEnabled ? ' TẮT VỆT CHUỘT' : ' BẬT VỆT CHUỘT'}
                   </button>
 
-                  <button 
+                  <button
                     className="pixel-button small"
                     onClick={() => {
                       setIsCustomCursorEnabled(!isCustomCursorEnabled);
@@ -293,12 +332,12 @@ function App() {
                     <div className="avatar-grid">
                       {avatars.map((img, i) => (
                         <div key={i} className={`avatar-item ${avatarIndex === i ? 'active' : ''}`}>
-                          <img 
-                            src={img} 
-                            alt={`Avatar ${i}`} 
+                          <img
+                            src={img}
+                            alt={`Avatar ${i}`}
                             onClick={() => setAvatarIndex(i)}
                           />
-                          <button 
+                          <button
                             className="delete-avatar-btn"
                             onClick={(e) => {
                               e.stopPropagation();
@@ -327,7 +366,6 @@ function App() {
               transition={{ duration: 0.8 }}
               className="header-content"
             >
-              <CyberAvatar avatars={avatars} forcedIndex={avatarIndex} />
               <h1>Dev_Canh.exe</h1>
               <p className="subtitle">Pháp Sư Fullstack Cấp 25</p>
             </motion.div>
@@ -377,14 +415,21 @@ function App() {
                 >
                   {activeTab === 'about' && (
                     <div className="about-section">
-                      <PixelCard 
-                        title="HỆ_THỐNG_SINH_HỌC" 
+                      <PixelCard
+                        title="HỆ_THỐNG_SINH_HỌC"
                         subtitle="Trạng thái: Đang hoạt động"
                         onClick={() => handleCardClick({
                           title: "CHI TIẾT TIỂU SỬ",
                           content: "Tôi bắt đầu hành trình của mình từ những dòng code C++ cơ bản. Sau 5 năm, tôi đã phát triển thành một Fullstack Developer với niềm đam mê mãnh liệt cho các giao diện mang phong cách Retro và Cyberpunk. Tôi tin rằng công nghệ không chỉ là những dòng code khô khan mà còn là nghệ thuật kể chuyện thông qua các điểm ảnh."
                         })}
                       >
+                        <div style={{ display: 'flex', gap: '20px', alignItems: 'center', marginBottom: '15px' }}>
+                          <CyberAvatar avatars={avatars} forcedIndex={avatarIndex} />
+                          <div>
+                            <p style={{ margin: 0 }}>Hệ thống: <strong>CANH.EXE</strong></p>
+                            <p style={{ margin: 0 }}>Chức năng: Fullstack Developer</p>
+                          </div>
+                        </div>
                         <p>
                           <Typewriter
                             key={activeTab}
@@ -405,8 +450,8 @@ function App() {
 
                   {activeTab === 'skills' && (
                     <div className="grid-layout">
-                      <PixelCard 
-                        title="FRONTEND" 
+                      <PixelCard
+                        title="FRONTEND"
                         subtitle="Thông Thạo: 90%"
                         onClick={() => handleCardClick({
                           title: "FRONTEND STACK",
@@ -419,8 +464,8 @@ function App() {
                           <li><Zap size={14} /> <Typewriter key={`${activeTab}-f3`} text="Framer Motion" delay={1300} /></li>
                         </ul>
                       </PixelCard>
-                      <PixelCard 
-                        title="BACKEND" 
+                      <PixelCard
+                        title="BACKEND"
                         subtitle="Thông Thạo: 85%"
                         onClick={() => handleCardClick({
                           title: "BACKEND STACK",
@@ -438,8 +483,8 @@ function App() {
 
                   {activeTab === 'projects' && (
                     <div className="grid-layout">
-                      <PixelCard 
-                        title="DỰ ÁN: NEON_VOID" 
+                      <PixelCard
+                        title="DỰ ÁN: NEON_VOID"
                         subtitle="Phát triển: 2024"
                         onClick={() => handleCardClick({
                           title: "NEON_VOID DETAILS",
@@ -455,8 +500,8 @@ function App() {
                         </p>
                         <button className="pixel-button"><Code size={14} /> XEM_NGUỒN</button>
                       </PixelCard>
-                      <PixelCard 
-                        title="DỰ ÁN: CYBER_DASH" 
+                      <PixelCard
+                        title="DỰ ÁN: CYBER_DASH"
                         subtitle="Phát triển: 2023"
                         onClick={() => handleCardClick({
                           title: "CYBER_DASH DETAILS",
@@ -476,8 +521,8 @@ function App() {
                   )}
 
                   {activeTab === 'contact' && (
-                    <PixelCard 
-                      title="KÊNH_LIÊN_LẠC" 
+                    <PixelCard
+                      title="KÊNH_LIÊN_LẠC"
                       subtitle="Phản hồi trong: 24h"
                       onClick={() => handleCardClick({
                         title: "THÔNG TIN LIÊN HỆ",
@@ -505,8 +550,8 @@ function App() {
             <p>VERSION_2.0.4_BETA</p>
           </footer>
 
-          <PixelModal 
-            isOpen={!!selectedItem} 
+          <PixelModal
+            isOpen={!!selectedItem}
             onClose={() => setSelectedItem(null)}
             title={selectedItem?.title}
           >

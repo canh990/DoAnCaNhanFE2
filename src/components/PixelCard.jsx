@@ -3,12 +3,15 @@ import Tilt from 'react-parallax-tilt';
 import './PixelCard.css';
 
 const PixelCard = ({ title, children, subtitle, onClick }) => {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+
   return (
     <Tilt
       perspective={1000}
-      glareEnable={true}
+      glareEnable={!isMobile}
       glareMaxOpacity={0.1}
-      scale={1.02}
+      scale={isMobile ? 1 : 1.02}
+      tiltEnable={!isMobile}
       className={`pixel-card-wrapper ${onClick ? 'clickable' : ''}`}
     >
       <div className="pixel-card" onClick={onClick}>

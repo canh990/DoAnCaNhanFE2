@@ -6,10 +6,33 @@ import './CyberpunkCity.css';
 const CyberpunkCity = ({ isDayMode, isRaining, isLightningEnabled }) => {
   const [isFlashing, setIsFlashing] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
+  const [isGlitching, setIsGlitching] = useState(false);
   const [lightningPos, setLightningPos] = useState({ left: '50%', top: '0%' });
 
+  // 1. Define building generation logic
+  const generateBuildings = () => ({
+    far: [...Array(12)].map((_, i) => ({
+      height: 150 + Math.random() * 200,
+      width: 40 + Math.random() * 40,
+      left: i * 8
+    })),
+    mid: [...Array(8)].map((_, i) => ({
+      height: 250 + Math.random() * 250,
+      width: 80 + Math.random() * 60,
+      left: i * 12,
+      hasNeon: i % 2 === 0
+    })),
+    near: [...Array(6)].map((_, i) => ({
+      height: 350 + Math.random() * 300,
+      width: 120 + Math.random() * 100,
+      left: i * 18
+    }))
+  });
+
+  // 2. State for buildings
+  const [buildingData, setBuildingData] = useState(generateBuildings());
+
   useEffect(() => {
-    // Sấm sét chỉ xuất hiện khi được bật
     if (!isLightningEnabled) return; 
 
     let activeTimeout = null;
@@ -18,8 +41,17 @@ const CyberpunkCity = ({ isDayMode, isRaining, isLightningEnabled }) => {
       setLightningPos({ left: Math.random() * 80 + 10 + '%', top: Math.random() * 10 + '%' });
       setIsFlashing(true);
       setIsShaking(true);
+      setIsGlitching(true);
+      
+      // 3. Update buildings on strike
+      setBuildingData(generateBuildings());
+
       playThunderSound();
       
+      setTimeout(() => {
+        setIsGlitching(false);
+      }, 300);
+
       setTimeout(() => {
         if (!isLightningEnabled) return;
         setIsFlashing(false);
@@ -38,7 +70,7 @@ const CyberpunkCity = ({ isDayMode, isRaining, isLightningEnabled }) => {
     window.triggerLightningStrike = triggerLightningStrike;
 
     const autoLightning = () => {
-      const delay = Math.random() * 3000 + 2000; // 2-5s for testing
+      const delay = Math.random() * 3000 + 9000; // ~10s (9-12s range)
       activeTimeout = setTimeout(() => {
         triggerLightningStrike();
         autoLightning();
@@ -50,14 +82,15 @@ const CyberpunkCity = ({ isDayMode, isRaining, isLightningEnabled }) => {
     return () => {
       if (activeTimeout) clearTimeout(activeTimeout);
       delete window.triggerLightningStrike;
-      // Reset states immediately
       setIsFlashing(false);
       setIsShaking(false);
+      setIsGlitching(false);
     };
   }, [isDayMode, isRaining, isLightningEnabled]);
 
   return (
     <div className={`city-background ${isDayMode ? 'day-mode' : ''} ${isFlashing ? 'flash' : ''} ${isShaking ? 'shake-all' : ''}`}>
+      {isGlitching && <div className="glitch-overlay"></div>}
       {/* Layer 1: Sky & Grid */}
       <div className="sky-layer">
         {isDayMode ? <div className="sun"></div> : <div className="moon"></div>}
@@ -66,25 +99,25 @@ const CyberpunkCity = ({ isDayMode, isRaining, isLightningEnabled }) => {
 
       {/* Layer 2: Distant Buildings */}
       <div className="buildings-far">
-        {[...Array(12)].map((_, i) => (
+        {buildingData.far.map((b, i) => (
           <div key={i} className="skyscraper far" style={{ 
-            height: 150 + Math.random() * 200 + 'px',
-            width: 40 + Math.random() * 40 + 'px',
-            left: i * 8 + '%'
+            height: b.height + 'px',
+            width: b.width + 'px',
+            left: b.left + '%'
           }}></div>
         ))}
       </div>
 
       {/* Layer 3: Mid Buildings with Neon */}
       <div className="buildings-mid">
-        {[...Array(8)].map((_, i) => (
+        {buildingData.mid.map((b, i) => (
           <div key={i} className="skyscraper mid" style={{ 
-            height: 250 + Math.random() * 250 + 'px',
-            width: 80 + Math.random() * 60 + 'px',
-            left: i * 12 + '%'
+            height: b.height + 'px',
+            width: b.width + 'px',
+            left: b.left + '%'
           }}>
             <div className="windows"></div>
-            {i % 2 === 0 && <div className="neon-sign"></div>}
+            {b.hasNeon && <div className="neon-sign"></div>}
           </div>
         ))}
       </div>
@@ -93,11 +126,11 @@ const CyberpunkCity = ({ isDayMode, isRaining, isLightningEnabled }) => {
 
       {/* Layer 4: Near Silhouettes */}
       <div className="buildings-near">
-        {[...Array(6)].map((_, i) => (
+        {buildingData.near.map((b, i) => (
           <div key={i} className="skyscraper near" style={{ 
-            height: 350 + Math.random() * 300 + 'px',
-            width: 120 + Math.random() * 100 + 'px',
-            left: i * 18 + '%'
+            height: b.height + 'px',
+            width: b.width + 'px',
+            left: b.left + '%'
           }}></div>
         ))}
       </div>
@@ -127,6 +160,7 @@ const CyberpunkCity = ({ isDayMode, isRaining, isLightningEnabled }) => {
       )}
 
       <div className="city-mist"></div>
+      <Drones />
       <div className="bottom-fog"></div>
     </div>
   );

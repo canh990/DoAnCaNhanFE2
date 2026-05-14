@@ -82,3 +82,29 @@
 .day-mode .pixel-card-content {
   color: #5d2a00;
 }
+
+@media (max-width: 768px) {
+  .pixel-card-wrapper {
+    margin: 10px 0;
+    max-width: 100%;
+  }
+
+  .pixel-card {
+    padding: 16px;
+    border-width: 2px;
+    box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.5);
+  }
+
+  .pixel-card-header h3 {
+    font-size: 0.9rem;
+  }
+
+  .pixel-card-decoration .corner {
+    width: 6px;
+    height: 6px;
+  }
+
+  .day-mode .pixel-card {
+    box-shadow: 6px 6px 0px rgba(160, 64, 0, 0.4);
+  }
+}
