@@ -35,8 +35,12 @@ function App() {
   const [avatarIndex, setAvatarIndex] = useState(() => {
     return parseInt(localStorage.getItem('cyber_avatar_index') || '0');
   });
-  const [avatars, setAvatars] = useState([]);
-  const [avatarObjects, setAvatarObjects] = useState([]);
+  const [avatars, setAvatars] = useState([avatar1, avatar2, avatar3]);
+  const [avatarObjects, setAvatarObjects] = useState([
+    { id: 'd1', image_data: avatar1 },
+    { id: 'd2', image_data: avatar2 },
+    { id: 'd3', image_data: avatar3 }
+  ]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -59,30 +63,14 @@ function App() {
     localStorage.setItem('cyber_avatar_index', avatarIndex.toString());
   }, [avatarIndex]);
 
-  // Fetch avatars from MySQL on mount
+  // Fetch avatars from local storage or defaults on mount
   useEffect(() => {
-    fetch('http://localhost:5000/api/avatars')
-      .then(res => res.json())
-      .then(data => {
-        if (data.length > 0) {
-          // Map to just the image strings for compatibility with existing UI
-          setAvatars(data.map(item => item.image_data));
-          // We might also want to store IDs for deletion, so let's adjust the state
-          setAvatarObjects(data);
-        } else {
-          // If DB is empty, use defaults
-          setAvatars([avatar1, avatar2, avatar3]);
-          setAvatarObjects([
-            { id: 'd1', image_data: avatar1 },
-            { id: 'd2', image_data: avatar2 },
-            { id: 'd3', image_data: avatar3 }
-          ]);
-        }
-      })
-      .catch(err => {
-        console.error("Server connection failed, using local defaults", err);
-        setAvatars([avatar1, avatar2, avatar3]);
-      });
+    const savedAvatars = localStorage.getItem('cyber_avatars_custom');
+    if (savedAvatars) {
+      const parsed = JSON.parse(savedAvatars);
+      setAvatars(prev => [...prev, ...parsed.map(a => a.image_data)]);
+      setAvatarObjects(prev => [...prev, ...parsed]);
+    }
   }, []);
 
   const handleAvatarUpload = (e) => {
@@ -91,30 +79,21 @@ function App() {
       const reader = new FileReader();
       reader.onload = (event) => {
         const base64 = event.target.result;
+        const newAvatar = { id: Date.now(), image_data: base64 };
 
-        // POST to MySQL
-        fetch('http://localhost:5000/api/avatars', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ image_data: base64 })
-        })
-          .then(res => {
-            if (!res.ok) throw new Error('Server error');
-            return res.json();
-          })
-          .then(newAvatar => {
-            setAvatars(prev => {
-              const next = [...prev, newAvatar.image_data];
-              setAvatarIndex(next.length - 1); // Set to the newly added avatar
-              return next;
-            });
-            setAvatarObjects(prev => [...prev, newAvatar]);
-            playKeySound();
-          })
-          .catch(err => {
-            console.error("Upload to server failed:", err);
-            alert("Lỗi: Không thể kết nối tới Server. Hãy đảm bảo bạn đã chạy 'node index.js' trong thư mục server.");
-          });
+        setAvatars(prev => {
+          const next = [...prev, newAvatar.image_data];
+          setAvatarIndex(next.length - 1);
+          return next;
+        });
+        setAvatarObjects(prev => {
+          const next = [...prev, newAvatar];
+          // Save custom avatars to localStorage (excluding defaults)
+          const customOnly = next.filter(obj => typeof obj.id === 'number');
+          localStorage.setItem('cyber_avatars_custom', JSON.stringify(customOnly));
+          return next;
+        });
+        playKeySound();
       };
       reader.readAsDataURL(file);
     }
@@ -125,23 +104,19 @@ function App() {
     if (!target) return;
     if (avatars.length <= 1) return;
 
-    // DELETE from MySQL if it's a real ID
-    if (typeof target.id === 'number') {
-      fetch(`http://localhost:5000/api/avatars/${target.id}`, { method: 'DELETE' })
-        .then(res => res.json())
-        .then(data => {
-          if (data.message) {
-            alert(data.message);
-          }
-          updateLocalAvatarState(index);
-        })
-        .catch(err => {
-          console.error("Delete failed:", err);
-          alert("Lỗi khi xóa ảnh khỏi database.");
-        });
-    } else {
-      // Just local delete for defaults
-      updateLocalAvatarState(index);
+    // Remove from local state
+    const newAvatars = avatars.filter((_, i) => i !== index);
+    const newObjects = avatarObjects.filter((_, i) => i !== index);
+    
+    setAvatars(newAvatars);
+    setAvatarObjects(newObjects);
+
+    // Update localStorage
+    const customOnly = newObjects.filter(obj => typeof obj.id === 'number');
+    localStorage.setItem('cyber_avatars_custom', JSON.stringify(customOnly));
+
+    if (avatarIndex >= index && avatarIndex > 0) {
+      setAvatarIndex(avatarIndex - 1);
     }
   };
 
