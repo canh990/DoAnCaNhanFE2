@@ -155,10 +155,25 @@
 }
 
 .settings-menu {
-  background: #1a0b2e;
-  border: 4px solid #4a2b7a;
+  background: #0d0221;
+  border: 4px solid #7b4fb6;
   padding: 15px;
-  box-shadow: 10px 10px 0px rgba(0,0,0,0.6);
+  box-shadow: 0 0 20px rgba(123, 79, 182, 0.4), 10px 10px 0px rgba(0,0,0,0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 200px;
+  backdrop-filter: blur(10px);
+}
+
+.settings-header {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.7rem;
+  color: #a093c7;
+  border-bottom: 1px solid #4a2b7a;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+  letter-spacing: 1px;
 }
 
 .pixel-button.small {
@@ -208,6 +223,30 @@
   border-color: #a04000;
 }
 
+/* Day Mode Settings Overrides */
+.app-root.day-mode .settings-btn {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: #f7941d;
+  color: #f7941d;
+}
+
+.app-root.day-mode .settings-btn.active,
+.app-root.day-mode .settings-btn:hover {
+  background: #f7941d;
+  color: #fff;
+}
+
+.app-root.day-mode .settings-menu {
+  background: rgba(255, 245, 230, 0.95);
+  border-color: #f7941d;
+  box-shadow: 0 0 20px rgba(247, 148, 29, 0.3), 10px 10px 0px rgba(0,0,0,0.2);
+}
+
+.app-root.day-mode .settings-header {
+  color: #a04000;
+  border-bottom-color: #f7941d;
+}
+
 @media (max-width: 600px) {
   .pixel-nav {
     flex-direction: column;
@@ -233,4 +272,24 @@
 @keyframes blink-cursor {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
+}
+
+@keyframes pulse-glow {
+  0% { box-shadow: 0 0 5px #7b4fb6, 4px 4px 0px rgba(0,0,0,0.5); }
+  50% { box-shadow: 0 0 15px #7b4fb6, 4px 4px 0px rgba(0,0,0,0.5); }
+  100% { box-shadow: 0 0 5px #7b4fb6, 4px 4px 0px rgba(0,0,0,0.5); }
+}
+
+.settings-btn.active {
+  animation: pulse-glow 2s infinite;
+}
+
+@keyframes pulse-glow-day {
+  0% { box-shadow: 0 0 5px #f7941d, 4px 4px 0px rgba(0,0,0,0.2); }
+  50% { box-shadow: 0 0 15px #f7941d, 4px 4px 0px rgba(0,0,0,0.2); }
+  100% { box-shadow: 0 0 5px #f7941d, 4px 4px 0px rgba(0,0,0,0.2); }
+}
+
+.app-root.day-mode .settings-btn.active {
+  animation: pulse-glow-day 2s infinite;
 }
