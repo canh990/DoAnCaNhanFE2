@@ -8,6 +8,7 @@ import LetterIntro from './components/LetterIntro';
 import PixelModal from './components/PixelModal';
 import { playKeySound, startRain, stopRain } from './utils/SoundManager';
 import Crows from './components/Crows';
+import CyberAvatar from './components/CyberAvatar';
 import './App.css';
 
 function App() {
@@ -20,7 +21,7 @@ function App() {
   const [isRaining, setIsRaining] = useState(true);
   const [isLightningEnabled, setIsLightningEnabled] = useState(true);
   const [crowDensity, setCrowDensity] = useState(5);
-  const [isGrainEnabled, setIsGrainEnabled] = useState(true);
+  const [isGrainEnabled, setIsGrainEnabled] = useState(false);
 
   // Simulate AJAX loading
   const handleTabChange = (tab) => {
@@ -168,8 +169,8 @@ function App() {
               transition={{ duration: 0.8 }}
               className="header-content"
             >
-              <Terminal className="header-icon" size={48} />
-              <h1>Dev_Pixel.exe</h1>
+              <CyberAvatar />
+              <h1>Dev_Canh.exe</h1>
               <p className="subtitle">Pháp Sư Fullstack Cấp 25</p>
             </motion.div>
           </header>
@@ -322,13 +323,13 @@ function App() {
                       subtitle="Phản hồi trong: 24h"
                       onClick={() => handleCardClick({
                         title: "THÔNG TIN LIÊN HỆ",
-                        content: "Bạn có thể liên hệ với tôi qua email: dev.pixel@example.com hoặc tìm thấy tôi trên GitHub/LinkedIn. Tôi luôn sẵn sàng cho các cơ hội cộng tác mới và các dự án mã nguồn mở."
+                        content: "Bạn có thể liên hệ với tôi qua email: dev.canh@example.com hoặc tìm thấy tôi trên GitHub/LinkedIn. Tôi luôn sẵn sàng cho các cơ hội cộng tác mới và các dự án mã nguồn mở."
                       })}
                     >
                       <ul className="pixel-list">
-                        <li><Mail size={16} /> dev.pixel@example.com</li>
-                        <li><Code size={16} /> github.com/dev_pixel</li>
-                        <li><ExternalLink size={16} /> linkedin.com/in/pixel_dev</li>
+                        <li><Mail size={16} /> dev.canh@example.com</li>
+                        <li><Code size={16} /> github.com/dev_canh</li>
+                        <li><ExternalLink size={16} /> linkedin.com/in/canh_dev</li>
                       </ul>
                       <div className="terminal-input">
                         <span>$</span>
@@ -342,7 +343,7 @@ function App() {
           </main>
 
           <footer className="main-footer">
-            <p>© 2024 DEV_PIXEL_SYSTEM // ALL RIGHTS RESERVED</p>
+            <p>© 2024 DEV_CANH_SYSTEM // ALL RIGHTS RESERVED</p>
             <p>VERSION_2.0.4_BETA</p>
           </footer>
 

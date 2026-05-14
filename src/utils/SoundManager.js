@@ -273,3 +273,56 @@ export const playCrowSound = () => {
   createCaw(0);
   if (Math.random() > 0.5) createCaw(0.2); // Double caw
 };
+
+export const playTechGlitch = () => {
+  const ctx = initAudio();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  
+  osc.type = 'square';
+  osc.frequency.setValueAtTime(10, now);
+  osc.frequency.exponentialRampToValueAtTime(800, now + 0.1);
+  osc.frequency.setValueAtTime(50, now + 0.15);
+
+  gain.gain.setValueAtTime(0.05, now);
+  gain.gain.setValueAtTime(0, now + 0.05);
+  gain.gain.setValueAtTime(0.05, now + 0.1);
+  gain.gain.setValueAtTime(0, now + 0.2);
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start();
+  osc.stop(now + 0.2);
+};
+
+export const playDigitalOpen = () => {
+  const ctx = initAudio();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  const filter = ctx.createBiquadFilter();
+
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(200, now);
+  osc.frequency.exponentialRampToValueAtTime(1200, now + 0.8);
+
+  filter.type = 'lowpass';
+  filter.frequency.setValueAtTime(500, now);
+  filter.frequency.exponentialRampToValueAtTime(5000, now + 0.8);
+
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.1, now + 0.1);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 1);
+
+  osc.connect(filter);
+  filter.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.start();
+  osc.stop(now + 1);
+};
