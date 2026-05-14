@@ -1,0 +1,82 @@
+.rain-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: linear-gradient(to bottom, #0d0221 0%, #1a0b2e 100%);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.rain-drop {
+  position: absolute;
+  top: -20px;
+  width: 2px;
+  height: 15px;
+  background: #7b4fb6;
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(100vh);
+  }
+}
+
+.rain-mist {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 20%;
+  background: linear-gradient(to top, rgba(74, 43, 122, 0.2), transparent);
+  filter: blur(10px);
+}
+
+.rain-container.flash {
+  background: #3e2a6d;
+  transition: background 0.03s;
+}
+
+.shake-all {
+  animation: global-shake 0.3s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes global-shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+.lightning-bolt-container {
+  position: absolute;
+  z-index: 1;
+  filter: drop-shadow(0 0 20px #fff);
+}
+
+.bolt-main {
+  animation: bolt-flicker 0.1s infinite;
+}
+
+.bolt-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
+  filter: blur(30px);
+}
+
+@keyframes bolt-flicker {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.1); }
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}

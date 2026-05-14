@@ -1,0 +1,280 @@
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Terminal, Code, Cpu, Mail, Ghost, Zap, ExternalLink, Sun, Moon, Settings } from 'lucide-react';
+import CyberpunkCity from './components/CyberpunkCity';
+import PixelCard from './components/PixelCard';
+import Typewriter from './components/Typewriter';
+import LetterIntro from './components/LetterIntro';
+import PixelModal from './components/PixelModal';
+import './App.css';
+
+function App() {
+  const [activeTab, setActiveTab] = useState('about');
+  const [loading, setLoading] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [isDayMode, setIsDayMode] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+
+  // Simulate AJAX loading
+  const handleTabChange = (tab) => {
+    setLoading(true);
+    setTimeout(() => {
+      setActiveTab(tab);
+      setLoading(false);
+    }, 400);
+  };
+
+  const getIcon = (tab) => {
+    switch (tab) {
+      case 'about': return <Ghost size={16} />;
+      case 'skills': return <Cpu size={16} />;
+      case 'projects': return <Code size={16} />;
+      case 'contact': return <Mail size={16} />;
+      default: return null;
+    }
+  };
+
+  const handleCardClick = (item) => {
+    setSelectedItem(item);
+  };
+
+  return (
+    <div className={`app-root ${isDayMode ? 'day-mode' : ''}`}>
+      <AnimatePresence>
+        {showIntro && (
+          <LetterIntro onComplete={() => setShowIntro(false)} />
+        )}
+      </AnimatePresence>
+
+      <CyberpunkCity isDayMode={isDayMode} />
+      
+      {!showIntro && (
+        <>
+          {/* Settings Toggle */}
+          <div className="settings-container">
+            <button 
+              className={`settings-btn ${showSettings ? 'active' : ''}`}
+              onClick={() => setShowSettings(!showSettings)}
+            >
+              <Settings size={20} />
+            </button>
+            <AnimatePresence>
+              {showSettings && (
+                <motion.div 
+                  className="settings-menu"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                >
+                  <button 
+                    className="pixel-button small"
+                    onClick={() => setIsDayMode(!isDayMode)}
+                  >
+                    {isDayMode ? <Moon size={14} /> : <Sun size={14} />}
+                    {isDayMode ? ' CHẾ ĐỘ ĐÊM' : ' CHẾ ĐỘ NGÀY'}
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <header className="main-header">
+            <motion.div
+              initial={{ y: -50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.8 }}
+              className="header-content"
+            >
+              <Terminal className="header-icon" size={48} />
+              <h1>Dev_Pixel.exe</h1>
+              <p className="subtitle">Pháp Sư Fullstack Cấp 25</p>
+            </motion.div>
+          </header>
+
+          <nav className="pixel-nav">
+            {['about', 'skills', 'projects', 'contact'].map(tab => {
+              const labels = {
+                about: 'GIỚI THIỆU',
+                skills: 'KỸ NĂNG',
+                projects: 'DỰ ÁN',
+                contact: 'LIÊN HỆ'
+              };
+              return (
+                <button
+                  key={tab}
+                  className={`pixel-button ${activeTab === tab ? 'active' : ''}`}
+                  onClick={() => handleTabChange(tab)}
+                >
+                  <span className="btn-icon">{getIcon(tab)}</span>
+                  {labels[tab]}
+                </button>
+              );
+            })}
+          </nav>
+
+          <main className="content-area">
+            <AnimatePresence mode="wait">
+              {loading ? (
+                <motion.div
+                  key="loader"
+                  className="loader"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  ĐANG_TẢI_DỮ_LIỆU...
+                </motion.div>
+              ) : (
+                <motion.div
+                  key={activeTab}
+                  initial={{ x: 20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  exit={{ x: -20, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="tab-content"
+                >
+                  {activeTab === 'about' && (
+                    <div className="about-section">
+                      <PixelCard 
+                        title="HỆ_THỐNG_SINH_HỌC" 
+                        subtitle="Trạng thái: Đang hoạt động"
+                        onClick={() => handleCardClick({
+                          title: "CHI TIẾT TIỂU SỬ",
+                          content: "Tôi bắt đầu hành trình của mình từ những dòng code C++ cơ bản. Sau 5 năm, tôi đã phát triển thành một Fullstack Developer với niềm đam mê mãnh liệt cho các giao diện mang phong cách Retro và Cyberpunk. Tôi tin rằng công nghệ không chỉ là những dòng code khô khan mà còn là nghệ thuật kể chuyện thông qua các điểm ảnh."
+                        })}
+                      >
+                        <p>
+                          <Typewriter
+                            key={activeTab}
+                            text="Tôi là một nhà phát triển thành thạo Javascript và mã nhị phân. Tôi tạo ra các trải nghiệm kỹ thuật số nằm giữa các điểm ảnh và bóng tối."
+                            delay={800}
+                          />
+                        </p>
+                        <p>
+                          <Typewriter
+                            key={`${activeTab}-motto`}
+                            text='Châm ngôn: "Code chỉ là tạm thời, logic là vĩnh cửu."'
+                            delay={5500}
+                          />
+                        </p>
+                      </PixelCard>
+                    </div>
+                  )}
+
+                  {activeTab === 'skills' && (
+                    <div className="grid-layout">
+                      <PixelCard 
+                        title="FRONTEND" 
+                        subtitle="Thông Thạo: 90%"
+                        onClick={() => handleCardClick({
+                          title: "FRONTEND STACK",
+                          content: "Kinh nghiệm chuyên sâu về React, Next.js và các thư viện quản lý state như Redux/Zustand. Khả năng thiết kế UI/UX theo phong cách pixel-perfect và đáp ứng đa thiết bị."
+                        })}
+                      >
+                        <ul className="pixel-list">
+                          <li><Zap size={14} /> <Typewriter key={`${activeTab}-f1`} text="React / Next.js" delay={300} /></li>
+                          <li><Zap size={14} /> <Typewriter key={`${activeTab}-f2`} text="Tailwind / SCSS" delay={800} /></li>
+                          <li><Zap size={14} /> <Typewriter key={`${activeTab}-f3`} text="Framer Motion" delay={1300} /></li>
+                        </ul>
+                      </PixelCard>
+                      <PixelCard 
+                        title="BACKEND" 
+                        subtitle="Thông Thạo: 85%"
+                        onClick={() => handleCardClick({
+                          title: "BACKEND STACK",
+                          content: "Xây dựng các hệ thống scalable sử dụng Node.js, thiết kế cơ sở dữ liệu tối ưu với PostgreSQL và tối ưu hiệu năng thông qua Redis. Thành thạo Docker và CI/CD."
+                        })}
+                      >
+                        <ul className="pixel-list">
+                          <li><Zap size={14} /> <Typewriter key={`${activeTab}-b1`} text="Node.js / Express" delay={500} /></li>
+                          <li><Zap size={14} /> <Typewriter key={`${activeTab}-b2`} text="PostgreSQL / MongoDB" delay={1000} /></li>
+                          <li><Zap size={14} /> <Typewriter key={`${activeTab}-b3`} text="Redis Caching" delay={1500} /></li>
+                        </ul>
+                      </PixelCard>
+                    </div>
+                  )}
+
+                  {activeTab === 'projects' && (
+                    <div className="grid-layout">
+                      <PixelCard 
+                        title="DỰ ÁN: NEON_VOID" 
+                        subtitle="Phát triển: 2024"
+                        onClick={() => handleCardClick({
+                          title: "NEON_VOID DETAILS",
+                          content: "Một ứng dụng trò chuyện mã hóa hoàn toàn được xây dựng trên nền tảng Web3. Sử dụng Socket.io cho giao tiếp thời gian thực và AES-256 cho bảo mật dữ liệu. Giao diện được thiết kế theo phong cách Cyberpunk neon."
+                        })}
+                      >
+                        <p>
+                          <Typewriter
+                            key={activeTab}
+                            text="Ứng dụng nhắn tin phi tập trung với mã hóa đầu cuối và giao diện pixel."
+                            delay={500}
+                          />
+                        </p>
+                        <button className="pixel-button"><Code size={14} /> XEM_NGUỒN</button>
+                      </PixelCard>
+                      <PixelCard 
+                        title="DỰ ÁN: CYBER_DASH" 
+                        subtitle="Phát triển: 2023"
+                        onClick={() => handleCardClick({
+                          title: "CYBER_DASH DETAILS",
+                          content: "Dashboard quản trị hệ thống tập trung. Cung cấp các biểu đồ trực quan hóa dữ liệu lưu lượng truy cập, tình trạng máy chủ và log lỗi theo thời gian thực."
+                        })}
+                      >
+                        <p>
+                          <Typewriter
+                            key={`${activeTab}-void`}
+                            text="Bảng điều khiển trực quan hóa dữ liệu thời gian thực để giám sát hệ thống máy chủ."
+                            delay={3500}
+                          />
+                        </p>
+                        <button className="pixel-button"><Zap size={14} /> KHỞI_CHẠY_APP</button>
+                      </PixelCard>
+                    </div>
+                  )}
+
+                  {activeTab === 'contact' && (
+                    <PixelCard 
+                      title="KÊNH_LIÊN_LẠC" 
+                      subtitle="Phản hồi trong: 24h"
+                      onClick={() => handleCardClick({
+                        title: "THÔNG TIN LIÊN HỆ",
+                        content: "Bạn có thể liên hệ với tôi qua email: dev.pixel@example.com hoặc tìm thấy tôi trên GitHub/LinkedIn. Tôi luôn sẵn sàng cho các cơ hội cộng tác mới và các dự án mã nguồn mở."
+                      })}
+                    >
+                      <ul className="pixel-list">
+                        <li><Mail size={16} /> dev.pixel@example.com</li>
+                        <li><Code size={16} /> github.com/dev_pixel</li>
+                        <li><ExternalLink size={16} /> linkedin.com/in/pixel_dev</li>
+                      </ul>
+                      <div className="terminal-input">
+                        <span>$</span>
+                        <input type="text" className="pixel-input" placeholder="Gửi tin nhắn cho tôi..." />
+                      </div>
+                    </PixelCard>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </main>
+
+          <footer className="main-footer">
+            <p>© 2024 DEV_PIXEL_SYSTEM // ALL RIGHTS RESERVED</p>
+            <p>VERSION_2.0.4_BETA</p>
+          </footer>
+
+          <PixelModal 
+            isOpen={!!selectedItem} 
+            onClose={() => setSelectedItem(null)}
+            title={selectedItem?.title}
+          >
+            <p>{selectedItem?.content}</p>
+          </PixelModal>
+        </>
+      )}
+    </div>
+  );
+}
+
+export default App;

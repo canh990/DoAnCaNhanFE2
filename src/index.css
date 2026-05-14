@@ -1,0 +1,76 @@
+:root {
+  --bg-dark: #0d0221;
+  --purple-deep: #1a0b2e;
+  --purple-main: #4a2b7a;
+  --purple-glow: #7b4fb6;
+  --text-primary: #e0d7ff;
+  --text-secondary: #a093c7;
+  --pixel-border: 4px;
+}
+
+* {
+  box-sizing: border-box;
+  image-rendering: pixelated;
+}
+
+body {
+  margin: 0;
+  font-family: 'JetBrains Mono', monospace;
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--purple-glow);
+  text-shadow: 2px 2px 0px var(--purple-deep);
+  letter-spacing: 1px;
+}
+
+.pixel-box {
+  background: var(--purple-deep);
+  border: var(--pixel-border) solid var(--purple-main);
+  box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.4);
+  padding: 20px;
+  position: relative;
+}
+
+.pixel-button {
+  background: var(--purple-main);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: 4px 4px 0px var(--purple-deep);
+  transition: all 0.1s;
+}
+
+.pixel-button:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px var(--purple-deep);
+  background: var(--purple-glow);
+}
+
+.pixel-button:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px var(--purple-deep);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--purple-main);
+  border: 2px solid var(--bg-dark);
+}

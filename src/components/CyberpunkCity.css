@@ -1,0 +1,241 @@
+.city-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(to bottom, #0d0221 0%, #1a0b2e 50%, #0d0221 100%);
+  overflow: hidden;
+  z-index: -1;
+}
+
+/* Layer 1: Sky */
+.sky-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60%;
+}
+
+.moon {
+  position: absolute;
+  top: 10%;
+  right: 15%;
+  width: 80px;
+  height: 80px;
+  background: #7b4fb6;
+  border-radius: 50%;
+  box-shadow: 0 0 40px #7b4fb6, 0 0 80px rgba(123, 79, 182, 0.3);
+  filter: blur(2px);
+}
+
+.distant-grid {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(rgba(123, 79, 182, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(123, 79, 182, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  perspective: 500px;
+  transform: rotateX(60deg) scale(2);
+  opacity: 0.3;
+}
+
+/* Buildings Base */
+.skyscraper {
+  position: absolute;
+  bottom: 0;
+  background: #0d0221;
+}
+
+/* Layer 2: Far */
+.buildings-far .skyscraper {
+  background: #150a24;
+  opacity: 0.6;
+  z-index: 1;
+}
+
+/* Layer 3: Mid */
+.buildings-mid .skyscraper {
+  background: #1a0b2e;
+  border-top: 2px solid #4a2b7a;
+  z-index: 2;
+  box-shadow: inset 0 20px 40px rgba(0,0,0,0.5);
+}
+
+.windows {
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(rgba(123, 79, 182, 0.3) 1px, transparent 1px);
+  background-size: 8px 12px;
+  opacity: 0.5;
+}
+
+.neon-sign {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 10px;
+  background: #7b4fb6;
+  box-shadow: 0 0 15px #7b4fb6;
+  animation: neon-flicker 3s infinite;
+}
+
+@keyframes neon-flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+  20%, 22%, 24%, 55% { opacity: 0.3; }
+}
+
+/* Layer 4: Near */
+.buildings-near .skyscraper {
+  background: #080111;
+  z-index: 3;
+}
+
+/* Rain Layer */
+.rain-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.rain-drop {
+  position: absolute;
+  width: 1px;
+  height: 50px;
+  background: linear-gradient(to bottom, transparent, rgba(123, 79, 182, 0.5));
+  animation: rain-fall linear infinite;
+}
+
+@keyframes rain-fall {
+  0% { transform: translateY(-100px); }
+  100% { transform: translateY(100vh); }
+}
+
+/* Lightning */
+.city-background.flash {
+  background: #2a1b4d;
+  transition: background 0.03s;
+}
+
+.lightning-bolt-container {
+  position: absolute;
+  z-index: 10;
+  filter: drop-shadow(0 0 30px #fff);
+}
+
+.bolt-main {
+  animation: bolt-flicker 0.1s infinite;
+}
+
+.bolt-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
+  filter: blur(40px);
+}
+
+@keyframes bolt-flicker {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+/* Shake */
+.shake-all {
+  animation: city-shake 0.3s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes city-shake {
+  10%, 90% { transform: translate3d(-2px, 0, 0); }
+  20%, 80% { transform: translate3d(4px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+  40%, 60% { transform: translate3d(6px, 0, 0); }
+}
+
+/* Day Mode Overrides for City */
+.city-background.day-mode {
+  background: linear-gradient(to bottom, #ff7e5f 0%, #feb47b 50%, #f7941d 100%);
+}
+
+.sun {
+  position: absolute;
+  top: 15%;
+  right: 20%;
+  width: 100px;
+  height: 100px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 60px #fff, 0 0 100px #feb47b;
+}
+
+.city-background.day-mode .distant-grid {
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px);
+}
+
+.city-background.day-mode .skyscraper.far {
+  background: #e67e22;
+  opacity: 0.4;
+}
+
+.city-background.day-mode .skyscraper.mid {
+  background: #d35400;
+  border-top: 2px solid #fff;
+}
+
+.city-background.day-mode .skyscraper.near {
+  background: #a04000;
+}
+
+.city-background.day-mode .windows {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px);
+}
+
+.city-background.day-mode .neon-sign {
+  background: #fff;
+  box-shadow: 0 0 15px #fff;
+}
+
+.city-background.day-mode .rain-drop {
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.4));
+}
+
+.city-background.day-mode .bottom-fog {
+  background: linear-gradient(to top, #f7941d 0%, transparent 100%);
+}
+
+/* Fog & Mist */
+.city-mist {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 50%, transparent 20%, rgba(13, 2, 33, 0.2) 100%);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.bottom-fog {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(to top, #0d0221 0%, transparent 100%);
+  z-index: 6;
+  opacity: 0.8;
+}

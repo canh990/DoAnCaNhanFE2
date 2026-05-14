@@ -1,0 +1,122 @@
+.letter-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #0d0221;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  cursor: pointer;
+}
+
+.envelope-wrapper {
+  position: relative;
+  width: 300px;
+  height: 200px;
+  transition: transform 0.3s;
+}
+
+.envelope-wrapper:hover:not(.open) {
+  transform: scale(1.05);
+}
+
+.envelope {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #4a2b7a;
+  border: 4px solid #1a0b2e;
+  box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.5);
+}
+
+.flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-left: 146px solid transparent;
+  border-right: 146px solid transparent;
+  border-top: 100px solid #7b4fb6;
+  border-bottom: 0px solid transparent;
+  z-index: 3;
+  transform-origin: top;
+  transition: transform 0.6s 0.2s ease-in-out;
+}
+
+.open .flap {
+  transform: rotateX(180deg);
+  z-index: 0;
+}
+
+.pocket {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #4a2b7a;
+  border-left: 146px solid transparent;
+  border-right: 146px solid transparent;
+  border-bottom: 100px solid #5a3b8a;
+  border-top: 100px solid transparent;
+  z-index: 2;
+  box-sizing: border-box;
+}
+
+.letter {
+  position: absolute;
+  bottom: 10px;
+  left: 10%;
+  width: 80%;
+  height: 80%;
+  background: #e0d7ff;
+  border: 4px solid #1a0b2e;
+  z-index: 1;
+  transition: transform 0.8s 0.8s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+.open .letter {
+  transform: translateY(-80px);
+}
+
+.letter-content {
+  text-align: center;
+  color: #1a0b2e;
+}
+
+.pixel-text {
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+}
+
+.pixel-text.small {
+  font-size: 0.7rem;
+  opacity: 0.7;
+}
+
+.click-hint {
+  position: absolute;
+  bottom: -60px;
+  width: 100%;
+  text-align: center;
+  color: #7b4fb6;
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: 700;
+  letter-spacing: 2px;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
