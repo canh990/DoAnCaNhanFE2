@@ -1,0 +1,109 @@
+.crows-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.dust-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(13, 2, 33, 0.05) 100%);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.crow-container {
+  position: absolute;
+  width: 40px;
+  height: 30px;
+  will-change: transform, opacity;
+}
+
+.crow {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.5));
+}
+
+.crow .body {
+  position: absolute;
+  width: 12px;
+  height: 6px;
+  background: #000;
+  top: 7px;
+  left: 9px;
+  clip-path: polygon(0 40%, 100% 0, 100% 60%, 0 100%);
+}
+
+.crow .wing {
+  position: absolute;
+  width: 15px;
+  height: 8px;
+  background: #1a1a1a;
+  transform-origin: center bottom;
+  animation: flap 0.3s infinite alternate ease-in-out;
+}
+
+.crow .wing-left {
+  left: 0;
+  top: 0;
+  clip-path: polygon(100% 100%, 0 0, 50% 100%);
+}
+
+.crow .wing-right {
+  right: 0;
+  top: 0;
+  clip-path: polygon(0 100%, 100% 0, 50% 100%);
+  animation-delay: 0.15s;
+}
+
+@keyframes flap {
+  0% { transform: rotateX(60deg) scaleY(1); }
+  100% { transform: rotateX(-60deg) scaleY(0.5); }
+}
+
+.crow-shadow {
+  position: absolute;
+  width: 20px;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.15);
+  bottom: -40px; /* Cast shadow far below */
+  left: 10px;
+  border-radius: 50%;
+  filter: blur(4px);
+  transform: scaleX(1.5);
+}
+
+/* Day Mode Adjustments */
+.app-root.day-mode .crow .body { background: #1a0f05; }
+.app-root.day-mode .crow .wing-top,
+.app-root.day-mode .crow .wing-bottom { background: #2a1a0a; }
+.app-root.day-mode .dust-overlay {
+  background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(247, 148, 29, 0.05) 100%);
+}
+
+/* Cinematic Wind/Dust animation */
+.dust-overlay::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 100%;
+  background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+  opacity: 0.03;
+  animation: dust-drift 60s linear infinite;
+}
+
+@keyframes dust-drift {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
