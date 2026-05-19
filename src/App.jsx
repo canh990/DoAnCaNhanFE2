@@ -183,7 +183,7 @@ function App() {
       )}
 
       {isMatrixMode && (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 2 }}
           animate={{ opacity: 1, scale: 1 }}
           className="matrix-alert"
@@ -476,21 +476,29 @@ function App() {
                         <button className="pixel-button"><Code size={14} /> XEM_NGUỒN</button>
                       </PixelCard>
                       <PixelCard
-                        title="DỰ ÁN: CYBER_DASH"
-                        subtitle="Phát triển: 2023"
+                        title="DỰ ÁN: TECHSTORE"
+                        subtitle="Phát triển: 2025"
                         onClick={() => handleCardClick({
-                          title: "CYBER_DASH DETAILS",
-                          content: "Dashboard quản trị hệ thống tập trung. Cung cấp các biểu đồ trực quan hóa dữ liệu lưu lượng truy cập, tình trạng máy chủ và log lỗi theo thời gian thực."
+                          title: "TECHSTORE DETAILS",
+                          content: "Hệ thống bán lẻ thiết bị công nghệ trực tuyến được xây dựng bằng ngôn ngữ PHP và hệ quản trị cơ sở dữ liệu MySQL. Dự án tích hợp đầy đủ các tính năng thương mại điện tử chuyên nghiệp: Quản lý giỏ hàng, tìm kiếm & bộ lọc sản phẩm, tin tức công nghệ (Blog), đăng ký/đăng nhập thành viên và trang quản trị (Admin) trực quan."
                         })}
                       >
                         <p>
                           <Typewriter
                             key={`${activeTab}-void`}
-                            text="Bảng điều khiển trực quan hóa dữ liệu thời gian thực để giám sát hệ thống máy chủ."
-                            delay={3500}
+                            text="Nền tảng thương mại điện tử chuyên nghiệp cung cấp thiết bị công nghệ chính hãng hàng đầu."
+                            delay={800}
                           />
                         </p>
-                        <button className="pixel-button"><Zap size={14} /> KHỞI_CHẠY_APP</button>
+                        <button
+                          className="pixel-button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.open("https://doanmonhoc.id.vn/", "_blank", "noopener,noreferrer");
+                          }}
+                        >
+                          <Zap size={14} /> KHỞI_CHẠY_APP
+                        </button>
                       </PixelCard>
                     </div>
                   )}
@@ -523,6 +531,7 @@ function App() {
           <footer className="main-footer">
             <p>© 2024 DEV_CANH_SYSTEM // ALL RIGHTS RESERVED</p>
             <p>VERSION_2.0.4_BETA</p>
+            <p className="easter-egg-hint">Gợi ý: Nhập "CANH" để kích hoạt hệ thống ẩn</p>
           </footer>
 
           <PixelModal

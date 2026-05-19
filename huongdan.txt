@@ -1,0 +1,20 @@
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS C:\Users\canh> cd C:\Users\canh\DoAnCaNhanFE2\server
+PS C:\Users\canh\DoAnCaNhanFE2\server> node index.js
+Server đang chạy tại http://localhost:5000
+Đã kết nối với MySQL.
+Bảng avatars đã sẵn sàng.
+C:\Users\canh\DoAnCaNhanFE2>npm run dev
+
+> pixel-resume@0.0.0 dev
+> vite
+
+
+  VITE v4.5.14  ready in 215 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
