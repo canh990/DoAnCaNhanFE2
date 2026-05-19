@@ -589,3 +589,21 @@
   50% { transform: translateX(-52%) skew(2deg); opacity: 0.8; }
   100% { transform: translateX(-48%) skew(-2deg); }
 }
+
+.easter-egg-hint {
+  margin-top: 15px;
+  font-size: 0.75rem;
+  color: #7b4fb6;
+  opacity: 0.5;
+  animation: pulse-opacity 2s infinite;
+  letter-spacing: 1px;
+}
+
+@keyframes pulse-opacity {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+.app-root.day-mode .easter-egg-hint {
+  color: #f7941d;
+}
