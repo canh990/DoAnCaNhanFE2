@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import avatar1 from '../assets/avatar1.png';
-import avatar2 from '../assets/avatar2.png';
-import avatar3 from '../assets/avatar3.png';
+import avatar2 from '../assets/2.png';
+import avatar3 from '../assets/d.png';
 import './CyberAvatar.css';
 
 const CyberAvatar = ({ avatars, forcedIndex }) => {

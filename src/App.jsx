@@ -13,8 +13,9 @@ import CursorTrail from './components/CursorTrail';
 import CustomCursor from './components/CustomCursor';
 import MatrixBackground from './components/MatrixBackground';
 import avatar1 from './assets/avatar1.png';
-import avatar2 from './assets/avatar2.png';
-import avatar3 from './assets/avatar3.png';
+import avatar2 from './assets/2.png';
+import avatar3 from './assets/d.png';
+
 import './App.css';
 
 function App() {
@@ -38,8 +39,7 @@ function App() {
   const [avatars, setAvatars] = useState([avatar1, avatar2, avatar3]);
   const [avatarObjects, setAvatarObjects] = useState([
     { id: 'd1', image_data: avatar1 },
-    { id: 'd2', image_data: avatar2 },
-    { id: 'd3', image_data: avatar3 }
+   
   ]);
 
   useEffect(() => {
@@ -341,7 +341,7 @@ function App() {
               transition={{ duration: 0.8 }}
               className="header-content"
             >
-              <h1>Dev_Canh.exe</h1>
+              <h1>NGUYỄN TRẦN VĂN CẢNH</h1>
               <p className="subtitle">Pháp Sư Fullstack Cấp 25</p>
             </motion.div>
           </header>
@@ -395,7 +395,7 @@ function App() {
                         subtitle="Trạng thái: Đang hoạt động"
                         onClick={() => handleCardClick({
                           title: "CHI TIẾT TIỂU SỬ",
-                          content: "Tôi bắt đầu hành trình của mình từ những dòng code C++ cơ bản. Sau 5 năm, tôi đã phát triển thành một Fullstack Developer với niềm đam mê mãnh liệt cho các giao diện mang phong cách Retro và Cyberpunk. Tôi tin rằng công nghệ không chỉ là những dòng code khô khan mà còn là nghệ thuật kể chuyện thông qua các điểm ảnh."
+                          content: "Tôi bắt đầu hành trình của mình từ những dòng code C# cơ bản. Sau 3 năm, tôi đã phát triển thành một Fullstack Developer với niềm đam mê mãnh liệt cho các giao diện mang phong cách Retro và Cyberpunk. Tôi tin rằng công nghệ không chỉ là những dòng code khô khan mà còn là nghệ thuật kể chuyện thông qua các điểm ảnh."
                         })}
                       >
                         <div style={{ display: 'flex', gap: '20px', alignItems: 'center', marginBottom: '15px' }}>
@@ -406,11 +406,11 @@ function App() {
                           </div>
                         </div>
                         <p>
-                          <Typewriter
-                            key={activeTab}
-                            text="Tôi là một nhà phát triển thành thạo Javascript và mã nhị phân. Tôi tạo ra các trải nghiệm kỹ thuật số nằm giữa các điểm ảnh và bóng tối."
-                            delay={800}
-                          />
+                            <Typewriter
+                              key={activeTab}
+                              text="Tôi là sinh viên Cao đẳng Công nghệ Thủ Đức, chuyên ngành Kỹ thuật Phần mềm. Tôi đam mê phát triển web, sử dụng React để tạo ra giao diện cyberpunk và các trải nghiệm tương tác."
+                              delay={800}
+                            />
                         </p>
                         <p>
                           <Typewriter
@@ -436,7 +436,7 @@ function App() {
                         <ul className="pixel-list">
                           <li><Zap size={14} /> <Typewriter key={`${activeTab}-f1`} text="React / Next.js" delay={300} /></li>
                           <li><Zap size={14} /> <Typewriter key={`${activeTab}-f2`} text="Tailwind / SCSS" delay={800} /></li>
-                          <li><Zap size={14} /> <Typewriter key={`${activeTab}-f3`} text="Framer Motion" delay={1300} /></li>
+                          <li><Zap size={14} /> <Typewriter key={`${activeTab}-f3`} text="bootstrap" delay={1300} /></li>
                         </ul>
                       </PixelCard>
                       <PixelCard
@@ -449,8 +449,8 @@ function App() {
                       >
                         <ul className="pixel-list">
                           <li><Zap size={14} /> <Typewriter key={`${activeTab}-b1`} text="Node.js / Express" delay={500} /></li>
-                          <li><Zap size={14} /> <Typewriter key={`${activeTab}-b2`} text="PostgreSQL / MongoDB" delay={1000} /></li>
-                          <li><Zap size={14} /> <Typewriter key={`${activeTab}-b3`} text="Redis Caching" delay={1500} /></li>
+                          <li><Zap size={14} /> <Typewriter key={`${activeTab}-b2`} text="PostgreSQL / MongoDB / MySQL " delay={1000} /></li>
+                          <li><Zap size={14} /> <Typewriter key={`${activeTab}-b3`} text="Laravel " delay={1500} /></li>
                         </ul>
                       </PixelCard>
                     </div>
@@ -459,21 +459,30 @@ function App() {
                   {activeTab === 'projects' && (
                     <div className="grid-layout">
                       <PixelCard
-                        title="DỰ ÁN: NEON_VOID"
-                        subtitle="Phát triển: 2024"
+                        title="DỰ ÁN: MẠNG XÃ HỘI"
+                        subtitle="Phát triển: 2026"
                         onClick={() => handleCardClick({
-                          title: "NEON_VOID DETAILS",
-                          content: "Một ứng dụng trò chuyện mã hóa hoàn toàn được xây dựng trên nền tảng Web3. Sử dụng Socket.io cho giao tiếp thời gian thực và AES-256 cho bảo mật dữ liệu. Giao diện được thiết kế theo phong cách Cyberpunk neon."
+                          title: "MẠNG XÃ HỘI DETAILS",
+                          content: "Hệ thống mạng xã hội trực tuyến được xây dựng bằng Laravel Framework và MySQL, cho phép người dùng đăng ký tài khoản, đăng nhập, tạo bài viết, chia sẻ nội dung, tương tác bằng lượt thích và bình luận, quản lý hồ sơ cá nhân, kết bạn và nhắn tin. Dự án được phát triển theo mô hình MVC, chú trọng vào hiệu năng, bảo mật dữ liệu và trải nghiệm người dùng, đồng thời dễ dàng mở rộng thêm các tính năng trong tương lai."
+
                         })}
                       >
                         <p>
                           <Typewriter
                             key={activeTab}
-                            text="Ứng dụng nhắn tin phi tập trung với mã hóa đầu cuối và giao diện pixel."
+                            text="Hệ thống mạng xã hội trực tuyến được xây dựng bằng Laravel Framework và MySQL"
                             delay={500}
                           />
                         </p>
-                        <button className="pixel-button"><Code size={14} /> XEM_NGUỒN</button>
+                        <button
+                          className="pixel-button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.open("https://mangxahoi.doanmonhoc.id.vn/", "_blank", "noopener,noreferrer");
+                          }}
+                        >
+                          <Zap size={14} /> KHỞI_CHẠY_APP
+                        </button>
                       </PixelCard>
                       <PixelCard
                         title="DỰ ÁN: TECHSTORE"
@@ -500,6 +509,31 @@ function App() {
                           <Zap size={14} /> KHỞI_CHẠY_APP
                         </button>
                       </PixelCard>
+                      <PixelCard
+                        title="DỰ ÁN: FE2-APPWEB"
+                        subtitle="Phát triển: 2026"
+                        onClick={() => handleCardClick({
+                          title: "FE2-APPWEB DETAILS",
+                          content: "Ứng dụng học tiếng Anh tích hợp AI — chức năng chính: học với AI, bài tập,tạo từ vựng bằng AI, kiểm tra và theo dõi tiến độ người học."
+                        })}
+                      >
+                        <p>
+                          <Typewriter
+                            key={`${activeTab}-fe2`}
+                            text="Ứng dụng học tiếng Anh tích hợp AI — học cùng trợ lý AI để cải thiện kỹ năng giao tiếp." 
+                            delay={800}
+                          />
+                        </p>
+                        <button
+                          className="pixel-button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.open("https://fe2apptienganh.vercel.app/", "_blank", "noopener,noreferrer");
+                          }}
+                        >
+                          <ExternalLink size={14} /> KHỞI_CHẠY_APP
+                        </button>
+                      </PixelCard>
                     </div>
                   )}
 
@@ -509,13 +543,13 @@ function App() {
                       subtitle="Phản hồi trong: 24h"
                       onClick={() => handleCardClick({
                         title: "THÔNG TIN LIÊN HỆ",
-                        content: "Bạn có thể liên hệ với tôi qua email: dev.canh@example.com hoặc tìm thấy tôi trên GitHub/LinkedIn. Tôi luôn sẵn sàng cho các cơ hội cộng tác mới và các dự án mã nguồn mở."
+                        content: "Bạn có thể liên hệ với tôi qua email: nguyencanhsstran@gmail.com hoặc tìm thấy tôi trên GitHub/LinkedIn. Tôi luôn sẵn sàng cho các cơ hội cộng tác mới và các dự án mã nguồn mở."
                       })}
                     >
                       <ul className="pixel-list">
-                        <li><Mail size={16} /> dev.canh@example.com</li>
-                        <li><Code size={16} /> github.com/dev_canh</li>
-                        <li><ExternalLink size={16} /> linkedin.com/in/canh_dev</li>
+                        <li><Mail size={16} /> nguyencanhsstran@gmail.com</li>
+                        <li><Code size={16} /> github.com/canh990</li>
+                        
                       </ul>
                       <div className="terminal-input">
                         <span>$</span>
