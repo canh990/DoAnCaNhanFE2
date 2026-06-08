@@ -341,7 +341,7 @@ function App() {
               transition={{ duration: 0.8 }}
               className="header-content"
             >
-              <h1>NGUYỄN TRẦN VĂN CẢNH</h1>
+              <h1>CANH.EXE</h1>
               <p className="subtitle">Pháp Sư Fullstack Cấp 25</p>
             </motion.div>
           </header>
@@ -401,7 +401,7 @@ function App() {
                         <div style={{ display: 'flex', gap: '20px', alignItems: 'center', marginBottom: '15px' }}>
                           <CyberAvatar avatars={avatars} forcedIndex={avatarIndex} />
                           <div>
-                            <p style={{ margin: 0 }}>Hệ thống: <strong>CANH.EXE</strong></p>
+                            <p style={{ margin: 0 }}>Hệ thống: <strong>NGUYỄN TRẦN VĂN CẢNH</strong></p>
                             <p style={{ margin: 0 }}>Chức năng: Fullstack Developer</p>
                           </div>
                         </div>
